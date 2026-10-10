@@ -51,6 +51,12 @@ export function Header() {
 
   return (
     <header className={`header${scrolled || open ? ' is-raised' : ''}`}>
+      <div className="dev-banner" role="status" aria-label="Development site announcement">
+        <div className="dev-banner__in">
+          <span className="dev-banner__badge">Under Development</span>
+          <span>This site is currently in active development. Displayed content and member details are placeholder data.</span>
+        </div>
+      </div>
       <div className="wrap header__in">
         <HomeLink className="brand" onNavigate={close} label={`${club.short}, ${club.name}: home`}>
           <Image className="brand__logo" src="/logo.svg" alt="" width={383} height={286} priority />
