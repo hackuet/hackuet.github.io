@@ -1,0 +1,699 @@
+/* Reset, typography and layout primitives. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--header-h) + var(--s-4));
+  background: var(--bg);
+}
+
+body {
+  margin: 0;
+  /* Transparent so the fixed circuit canvas shows through behind the content. */
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--text-md);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
+}
+
+h1,
+h2,
+h3,
+p,
+ul,
+ol,
+dl,
+dd,
+figure,
+fieldset {
+  margin: 0;
+  padding: 0;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+fieldset {
+  border: 0;
+  min-width: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+svg,
+img {
+  display: block;
+  max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+address {
+  font-style: normal;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 650;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: var(--text-4xl);
+  letter-spacing: -0.03em;
+}
+
+h2 {
+  font-size: var(--text-3xl);
+}
+
+/* Item titles inside lists are h2 on section pages and h3 on the home page; both read the same. */
+h3,
+.rows h2,
+.timeline h2 {
+  font-family: var(--font-body);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.005em;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: var(--r-xs);
+}
+
+::selection {
+  background: var(--blue-100);
+}
+
+/* ---- Layout ---- */
+
+.wrap {
+  width: min(100% - 2 * var(--gutter), var(--wrap));
+  margin-inline: auto;
+}
+
+main {
+  padding-top: var(--header-h);
+}
+
+.section {
+  padding-block: var(--section-y);
+}
+
+
+/* Heading on the left, content on the right: the page's one repeating layout. */
+.split {
+  display: grid;
+  gap: var(--s-6);
+}
+
+@media (min-width: 900px) {
+  .split {
+    grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+    gap: var(--s-8);
+    align-items: start;
+  }
+
+  .split > .section-head {
+    position: sticky;
+    top: calc(var(--header-h) + var(--s-6));
+  }
+}
+
+.section-head {
+  display: grid;
+  gap: var(--s-4);
+  justify-items: start;
+}
+
+.section-head__note {
+  color: var(--ink-2);
+}
+
+.wrap > .section-head {
+  margin-bottom: var(--s-7);
+  max-width: 640px;
+}
+
+.page-top {
+  padding-block: clamp(40px, 6vw, 80px) var(--section-y);
+}
+
+.page-head {
+  display: grid;
+  gap: var(--s-4);
+  max-width: 720px;
+  margin-bottom: var(--s-7);
+}
+
+/* ---- Text styles ---- */
+
+.addr {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.addr span {
+  color: var(--accent);
+}
+
+.addr--light {
+  color: var(--sky-300);
+}
+
+.lede {
+  font-size: var(--text-xl);
+  line-height: 1.5;
+  color: var(--ink-2);
+  max-width: 60ch;
+}
+
+.statement {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  max-width: 30ch;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.skip {
+  position: fixed;
+  top: var(--s-2);
+  left: var(--s-2);
+  z-index: 100;
+  padding: var(--s-3) var(--s-4);
+  background: var(--ink);
+  color: #fff;
+  border-radius: var(--r-sm);
+  transform: translateY(-200%);
+}
+
+.skip:focus {
+  transform: none;
+}
+
+.media {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Ruled rows: the alternative to card grids used across the site. */
+.rows > li {
+  border-top: 1px solid var(--line);
+  padding-block: var(--s-5);
+}
+
+.rows > li:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+.rows p {
+  color: var(--ink-2);
+}
+
+.rows--numbered {
+  counter-reset: row;
+  margin-top: var(--s-7);
+}
+
+.rows--numbered > li {
+  counter-increment: row;
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  row-gap: var(--s-1);
+}
+
+.rows--numbered > li::before {
+  content: counter(row, decimal-leading-zero);
+  grid-row: span 2;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--accent);
+  padding-top: 3px;
+}
+
+/* ---- Section pages ---- */
+
+.page-body {
+  max-width: 860px;
+}
+
+.page-body > .statement {
+  margin-bottom: var(--s-2);
+}
+
+.crumbs ol {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.crumbs li + li::before {
+  content: '/';
+  margin-right: var(--s-2);
+  color: var(--line-strong);
+}
+
+.crumbs a:hover {
+  color: var(--accent);
+}
+
+.crumbs__addr {
+  margin-right: var(--s-2);
+  color: var(--accent);
+}
+
+.pager {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s-4);
+  margin-top: var(--s-9);
+  padding-top: var(--s-5);
+  border-top: 1px solid var(--line);
+}
+
+.pager__link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-3);
+  justify-self: start;
+  padding-block: var(--s-2);
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+.pager__link--next {
+  justify-self: end;
+  text-align: right;
+}
+
+.pager__link small {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.pager__link svg {
+  flex: none;
+  color: var(--accent);
+  transition: transform var(--t-fast) var(--ease);
+}
+
+.pager__link:hover {
+  color: var(--accent);
+}
+
+.pager__link:hover svg {
+  transform: translateX(-4px);
+}
+
+.pager__link--next:hover svg {
+  transform: translateX(4px);
+}
+
+/* ---- Motion ---- */
+
+/* Animated circuit board behind every page. */
+.circuit {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  animation: fade-in 900ms ease-out both;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+.circuit--hero {
+  position: absolute;
+  z-index: 0;
+}
+
+/* Mouse movement: a bracketed probe that eases after the cursor. It opens up over anything
+   clickable and closes in while the button is held. */
+.probe {
+  --c: var(--cyan-500);
+  --arm: 8px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 190;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 200ms;
+}
+
+.probe.is-on {
+  opacity: 1;
+}
+
+.probe::before {
+  content: '';
+  position: absolute;
+  inset: -15px;
+  background:
+    linear-gradient(var(--c), var(--c)) top left / var(--arm) 1.5px,
+    linear-gradient(var(--c), var(--c)) top left / 1.5px var(--arm),
+    linear-gradient(var(--c), var(--c)) top right / var(--arm) 1.5px,
+    linear-gradient(var(--c), var(--c)) top right / 1.5px var(--arm),
+    linear-gradient(var(--c), var(--c)) bottom left / var(--arm) 1.5px,
+    linear-gradient(var(--c), var(--c)) bottom left / 1.5px var(--arm),
+    linear-gradient(var(--c), var(--c)) bottom right / var(--arm) 1.5px,
+    linear-gradient(var(--c), var(--c)) bottom right / 1.5px var(--arm);
+  background-repeat: no-repeat;
+  transition:
+    inset 220ms var(--ease),
+    transform 220ms var(--ease);
+}
+
+.probe.is-active::before {
+  inset: -24px;
+  transform: rotate(45deg);
+}
+
+.probe.is-down::before {
+  inset: -9px;
+}
+
+/* The probe is alive while it travels: its brackets pulse like a clock line and a signal
+   runs laps around its outline. */
+.probe.is-on::before {
+  animation: probe-pulse 1.4s ease-in-out infinite;
+}
+
+.probe::after {
+  --r: 15px;
+  content: '';
+  position: absolute;
+  top: -2.5px;
+  left: -2.5px;
+  width: 5px;
+  height: 5px;
+  background: var(--blue-600);
+  animation: probe-orbit 1.6s linear infinite;
+}
+
+.probe.is-active::after {
+  --r: 24px;
+  animation-duration: 0.9s;
+}
+
+.probe.is-down::after {
+  --r: 9px;
+}
+
+@keyframes probe-pulse {
+  50% {
+    opacity: 0.45;
+  }
+}
+
+@keyframes probe-orbit {
+  0%,
+  100% {
+    transform: translate(calc(var(--r) * -1), calc(var(--r) * -1));
+  }
+  25% {
+    transform: translate(var(--r), calc(var(--r) * -1));
+  }
+  50% {
+    transform: translate(var(--r), var(--r));
+  }
+  75% {
+    transform: translate(calc(var(--r) * -1), var(--r));
+  }
+}
+
+/* Mouse click: a chip outline snaps outward, a second ring follows, the core flashes
+   and eight pins fly off the four sides. */
+.spark {
+  position: fixed;
+  z-index: 200;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.spark i {
+  position: absolute;
+  display: block;
+}
+
+.spark__ring {
+  inset: -16px;
+  border: 1.5px solid var(--cyan-500);
+  border-radius: 3px;
+  animation: spark-ring 520ms var(--ease) both;
+}
+
+.spark__ring--late {
+  border-color: var(--blue-600);
+  animation-delay: 110ms;
+  animation-duration: 560ms;
+}
+
+.spark__core {
+  inset: -5px;
+  background: var(--cyan-500);
+  border-radius: 1px;
+  animation: spark-core 320ms var(--ease) both;
+}
+
+.spark__pin {
+  left: -1px;
+  top: -4px;
+  width: 2px;
+  height: 9px;
+  background: var(--blue-600);
+  transform: rotate(var(--angle)) translate(var(--shift), -18px);
+  animation: spark-pin 560ms var(--ease) both;
+}
+
+@keyframes spark-ring {
+  from {
+    opacity: 1;
+    transform: scale(0.25);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.9);
+  }
+}
+
+@keyframes spark-core {
+  from {
+    opacity: 1;
+    transform: scale(1.4);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.2) rotate(90deg);
+  }
+}
+
+@keyframes spark-pin {
+  from {
+    opacity: 1;
+    transform: rotate(var(--angle)) translate(var(--shift), -14px) scaleY(0.4);
+  }
+  60% {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    transform: rotate(var(--angle)) translate(var(--shift), -46px) scaleY(1);
+  }
+}
+
+/* Fade-in on scroll. Hidden only when scripting is available to reveal it again. */
+.js .reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 520ms var(--ease),
+    transform 520ms var(--ease);
+}
+
+.js .reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* Typewriter headings */
+.js .tw:not(.is-ready) > span {
+  visibility: hidden;
+}
+
+.tw__rest {
+  visibility: hidden;
+}
+
+.tw__caret {
+  position: relative;
+  display: inline-block;
+  width: 0;
+  height: 0.82em;
+  vertical-align: baseline;
+}
+
+.tw.is-ready .tw__caret::after {
+  content: '';
+  position: absolute;
+  left: 3px;
+  bottom: -0.06em;
+  width: 0.09em;
+  height: 100%;
+  background: var(--cyan-500);
+  animation: caret 700ms steps(1) infinite;
+}
+
+.tw__caret.is-done::after {
+  animation:
+    caret 700ms steps(1) 2,
+    caret-out 200ms 1400ms forwards !important;
+}
+
+@keyframes caret {
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes caret-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .js .reveal {
+    opacity: 1;
+    transform: none;
+  }
+
+  .spark,
+  .tw__caret {
+    display: none;
+  }
+
+  .circuit {
+    animation: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .probe {
+    display: none;
+  }
+}
+
+/* A tinted band groups Mission and Vision on the front page. The slight transparency
+   lets the circuit show through without competing with the text. */
+.band {
+  background: rgba(241, 247, 252, 0.88);
+  border-block: 1px solid var(--line);
+}
+
+.section--flush {
+  padding-top: 0;
+}
+
+.page-section + .page-section {
+  margin-top: var(--s-8);
+}
+
+.page-section__title {
+  margin-bottom: var(--s-4);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
