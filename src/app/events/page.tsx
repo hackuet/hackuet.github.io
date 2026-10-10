@@ -1,8 +1,6 @@
-import Link from 'next/link'
-import { Reveal } from '@/components/motion'
+import { EventsView } from '@/components/EventsView'
 import { Page } from '@/components/Page'
-import { EmptyState } from '@/components/ui'
-import { club, events, type ClubEvent } from '@/data/club'
+import { club, events } from '@/data/club'
 import { orgId, pageMeta } from '@/lib/seo'
 
 export const metadata = pageMeta({
@@ -11,7 +9,7 @@ export const metadata = pageMeta({
   path: '/events',
 })
 
-// Split at build time; the site is rebuilt whenever the events list changes.
+// Build-time split for initial HTML and Event JSON-LD structured data.
 const today = new Date().toISOString().slice(0, 10)
 const upcoming = events.filter((e) => e.date >= today).sort((a, b) => a.date.localeCompare(b.date))
 const past = events.filter((e) => e.date < today).sort((a, b) => b.date.localeCompare(a.date))
@@ -35,23 +33,6 @@ const jsonLd = {
   })),
 }
 
-function EventList({ items }: { items: ClubEvent[] }) {
-  return (
-    <ul className="rows events">
-      {items.map((e, i) => (
-        <Reveal as="li" key={e.id} delay={i * 60}>
-          <time dateTime={e.date}>{e.when}</time>
-          <div>
-            <h3>{e.title}</h3>
-            <p>{e.body}</p>
-            <p className="events__place">{e.place}</p>
-          </div>
-        </Reveal>
-      ))}
-    </ul>
-  )
-}
-
 export default function EventsPage() {
   return (
     <Page
@@ -60,33 +41,7 @@ export default function EventsPage() {
       lede="Every event is free for KUET students. Members get first claim on boards."
       jsonLd={upcoming.length ? jsonLd : undefined}
     >
-      <section className="page-section" aria-labelledby="upcoming-title">
-        <h2 id="upcoming-title" className="page-section__title">
-          Upcoming
-        </h2>
-        {upcoming.length ? (
-          <EventList items={upcoming} />
-        ) : (
-          <EmptyState
-            title="Nothing on the calendar yet"
-            body={`Weekly sessions still run ${club.meets}. New events are announced to members first.`}
-            action={
-              <Link href="/register" className="btn btn--primary btn--sm">
-                Register to hear first
-              </Link>
-            }
-          />
-        )}
-      </section>
-
-      {past.length > 0 && (
-        <section className="page-section" aria-labelledby="past-title">
-          <h2 id="past-title" className="page-section__title">
-            Past
-          </h2>
-          <EventList items={past} />
-        </section>
-      )}
+      <EventsView initialUpcoming={upcoming} initialPast={past} allEvents={events} />
     </Page>
   )
 }

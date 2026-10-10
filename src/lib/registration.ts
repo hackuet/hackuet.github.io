@@ -76,10 +76,40 @@ export function passId(roll: string): string {
   return /^\d{7}$/.test(roll) ? `HACK-${roll.slice(0, 2)}-${roll.slice(2)}` : 'HACK-00-00000'
 }
 
+export function isIssuedPass(obj: unknown): obj is IssuedPass {
+  if (!obj || typeof obj !== 'object') return false
+  const p = obj as Record<string, unknown>
+  return (
+    typeof p.id === 'string' &&
+    typeof p.name === 'string' &&
+    p.name.trim().length >= 3 &&
+    typeof p.roll === 'string' &&
+    /^\d{7}$/.test(p.roll) &&
+    typeof p.department === 'string' &&
+    departments.includes(p.department) &&
+    typeof p.batch === 'string' &&
+    batches.includes(p.batch) &&
+    typeof p.email === 'string' &&
+    EMAIL.test(p.email.trim()) &&
+    typeof p.phone === 'string' &&
+    typeof p.track === 'string' &&
+    tracks.some((t) => t.id === p.track) &&
+    typeof p.note === 'string' &&
+    typeof p.issuedAt === 'string'
+  )
+}
+
 export function loadPass(): IssuedPass | null {
   try {
     const raw = localStorage.getItem(KEY)
-    return raw ? (JSON.parse(raw) as IssuedPass) : null
+    if (!raw) return null
+    const parsed = JSON.parse(raw)
+    if (isIssuedPass(parsed)) {
+      return parsed
+    }
+    // Invalid shape in localStorage: clean up to avoid corrupted state
+    localStorage.removeItem(KEY)
+    return null
   } catch {
     return null
   }

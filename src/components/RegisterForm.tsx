@@ -98,11 +98,17 @@ export function RegisterForm() {
     })
   }
 
+  const hasDescription = (field: keyof Registration) => {
+    if (errors[field]) return true
+    if (field === 'roll' || field === 'note') return true
+    return false
+  }
+
   const props = (field: keyof Registration) => ({
     id: `reg-${field}`,
     name: field,
     'aria-invalid': errors[field] ? true : undefined,
-    'aria-describedby': `reg-${field}-msg`,
+    'aria-describedby': hasDescription(field) ? `reg-${field}-msg` : undefined,
     onBlur: () => check(field),
   })
 
