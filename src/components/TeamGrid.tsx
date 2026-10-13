@@ -16,7 +16,7 @@ export function TeamGrid({ members }: { members: Member[] }) {
     <ul className="team">
       {members.map((m) => (
         <li key={m.id}>
-          <article className="member" tabIndex={0} aria-label={`${m.name}, ${m.title}, ${m.department} ${m.batch}`}>
+          <article className="member" tabIndex={0} aria-label={`${m.name}, ${m.title}${m.designation ? `, ${m.designation}` : ''}${m.batch ? `, batch ${m.batch}` : ''}`}>
             <div className="member__photo">
               <Media image={m.image} alt={`Portrait of ${m.name}`} seed={m.seed} hue={m.hue} />
               {!m.image && (
@@ -28,14 +28,30 @@ export function TeamGrid({ members }: { members: Member[] }) {
                 <p className="member__title">{m.title}</p>
                 <h2 className="member__name">{m.name}</h2>
                 <dl>
-                  <div>
-                    <dt>Dept.</dt>
-                    <dd>{m.department}</dd>
-                  </div>
-                  <div>
-                    <dt>Batch</dt>
-                    <dd>{m.batch}</dd>
-                  </div>
+                  {m.designation && (
+                    <div>
+                      <dt>Designation</dt>
+                      <dd>{m.designation}</dd>
+                    </div>
+                  )}
+                  {m.department && (
+                    <div>
+                      <dt>Dept.</dt>
+                      <dd>{m.department}</dd>
+                    </div>
+                  )}
+                  {m.roll && (
+                    <div>
+                      <dt>Roll</dt>
+                      <dd>{m.roll}</dd>
+                    </div>
+                  )}
+                  {m.batch && (
+                    <div>
+                      <dt>Batch</dt>
+                      <dd>{m.batch}</dd>
+                    </div>
+                  )}
                 </dl>
               </div>
             </div>

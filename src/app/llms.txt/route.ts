@@ -49,7 +49,7 @@ ${events.map((e) => `- ${e.when}: ${e.title}, ${e.place}. ${e.body}`).join('\n')
 
 ## Executive Board
 
-${team.map((m) => `- ${m.title}: ${m.name} (${m.department}, batch ${m.batch})`).join('\n')}
+${team.map((m) => `- ${m.title}: ${m.name}${m.designation ? ` (${m.designation})` : ''}${m.batch ? ` (batch ${m.batch})` : ''}`).join('\n')}
 
 ## Pages
 

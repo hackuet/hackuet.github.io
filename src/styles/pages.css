@@ -782,10 +782,12 @@
   aspect-ratio: 4 / 5;
   overflow: hidden;
   border-radius: var(--r-sm);
-  background: var(--navy-800);
+  background: #0f172a url('/team-backdrop.webp') center / cover no-repeat;
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .member__photo .media {
+  object-position: center top;
   transition: transform 600ms var(--ease);
 }
 
