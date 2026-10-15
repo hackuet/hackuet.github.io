@@ -17,7 +17,9 @@ export const client = createClient({
   projectId,
   dataset,
   apiVersion: '2026-10-01',
-  useCdn: process.env.NODE_ENV === 'production',
+  // Build-time only: never read through the CDN, so a webhook-triggered rebuild
+  // always sees the publish it was triggered by.
+  useCdn: false,
 })
 
 const builder = createImageUrlBuilder(client)

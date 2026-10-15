@@ -708,6 +708,14 @@ git commit -m "feat(studio): pinned singletons, orderable lists, deploy host"
 npm install @sanity/client @sanity/image-url
 ```
 
+Also add a root `prebuild` script (runs automatically before every `npm run build`):
+
+```json
+"prebuild": "node -e \"require('fs').rmSync('.next/cache/fetch-cache', { recursive: true, force: true })\""
+```
+
+Next persists fetched responses in `.next/cache/fetch-cache`, so without this a local rebuild can reuse the previous build’s Sanity reads and serve stale content. CI builds start from fresh checkouts and are unaffected; this keeps local rebuilds honest.
+
 - [ ] **Step 2: create `src/lib/types.ts`.**
 
 ```ts
@@ -839,7 +847,7 @@ export function routeSections(): Section[] {
 
 ```ts
 import { createClient } from '@sanity/client'
-import imageUrlBuilder from '@sanity/image-url'
+import { createImageUrlBuilder } from '@sanity/image-url'
 import type { SanityImage } from './types'
 
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID
@@ -857,10 +865,12 @@ export const client = createClient({
   projectId,
   dataset,
   apiVersion: '2026-10-01',
-  useCdn: process.env.NODE_ENV === 'production',
+  // Build-time only: never read through the CDN, so a webhook-triggered rebuild
+  // always sees the publish it was triggered by.
+  useCdn: false,
 })
 
-const builder = imageUrlBuilder(client)
+const builder = createImageUrlBuilder(client)
 
 /** CDN URL for a Sanity image, format-optimised; undefined when no image is set. */
 export function imageUrl(image: SanityImage | undefined, width: number): string | undefined {
