@@ -7,6 +7,8 @@
     "dev": "next dev",
     "build": "next build && node scripts/postexport.mjs",
     "start": "serve out",
+    "studio": "npm --prefix studio run dev",
+    "studio:deploy": "npm --prefix studio run deploy",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
