@@ -1,8 +1,7 @@
 import type { Metadata } from 'next'
 import { EventsView } from '@/components/EventsView'
 import { Page } from '@/components/Page'
-import { club, events } from '@/data/club'
-import { getSiteSettings } from '@/lib/content'
+import { getEvents, getSiteSettings } from '@/lib/content'
 import { orgId, pageMeta } from '@/lib/seo'
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -15,39 +14,41 @@ export async function generateMetadata(): Promise<Metadata> {
   })
 }
 
-// Build-time split for initial HTML and Event JSON-LD structured data.
-const today = new Date().toISOString().slice(0, 10)
-const upcoming = events.filter((e) => e.date >= today).sort((a, b) => a.date.localeCompare(b.date))
-const past = events.filter((e) => e.date < today).sort((a, b) => b.date.localeCompare(a.date))
+export default async function EventsPage() {
+  const [club, events] = await Promise.all([getSiteSettings(), getEvents()])
 
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@graph': upcoming.map((e) => ({
-    '@type': 'EducationEvent',
-    name: e.title,
-    description: e.body,
-    startDate: e.date,
-    eventStatus: 'https://schema.org/EventScheduled',
-    eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
-    isAccessibleForFree: true,
-    location: {
-      '@type': 'Place',
-      name: e.place,
-      address: { '@type': 'PostalAddress', addressLocality: 'Khulna', postalCode: '9203', addressCountry: 'BD' },
-    },
-    organizer: { '@id': orgId },
-  })),
-}
+  // Build-time split for initial HTML and Event JSON-LD structured data.
+  const today = new Date().toISOString().slice(0, 10)
+  const upcoming = events.filter((e) => e.date >= today).sort((a, b) => a.date.localeCompare(b.date))
+  const past = events.filter((e) => e.date < today).sort((a, b) => b.date.localeCompare(a.date))
 
-export default function EventsPage() {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': upcoming.map((e) => ({
+      '@type': 'EducationEvent',
+      name: e.title,
+      description: e.body,
+      startDate: e.date,
+      eventStatus: 'https://schema.org/EventScheduled',
+      eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+      isAccessibleForFree: true,
+      location: {
+        '@type': 'Place',
+        name: e.place,
+        address: { '@type': 'PostalAddress', addressLocality: 'Khulna', postalCode: '9203', addressCountry: 'BD' },
+      },
+      organizer: { '@id': orgId },
+    })),
+  }
+
   return (
     <Page
       path="/events"
       title="What is on, and what was."
-      lede="Every event is free for KUET students. Members get first claim on boards."
+      lede="Every event is free for KUET students. Members get first claim on hardware."
       jsonLd={upcoming.length ? jsonLd : undefined}
     >
-      <EventsView initialUpcoming={upcoming} initialPast={past} allEvents={events} />
+      <EventsView initialUpcoming={upcoming} initialPast={past} allEvents={events} meets={club.meets} />
     </Page>
   )
 }

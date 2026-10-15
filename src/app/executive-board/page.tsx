@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 import { Page } from '@/components/Page'
 import { TeamGrid } from '@/components/TeamGrid'
-import { club, team } from '@/data/club'
-import { getSiteSettings } from '@/lib/content'
+import { EmptyState } from '@/components/ui'
+import { getSiteSettings, getTeam } from '@/lib/content'
 import { orgId, pageMeta } from '@/lib/seo'
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -15,19 +15,23 @@ export async function generateMetadata(): Promise<Metadata> {
   })
 }
 
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'Organization',
-  '@id': orgId,
-  member: team.map((m) => ({
-    '@type': 'Person',
-    name: m.name,
-    jobTitle: m.title,
-    affiliation: { '@type': 'CollegeOrUniversity', name: club.university },
-  })),
-}
+export default async function ExecutiveBoardPage() {
+  const [club, team] = await Promise.all([getSiteSettings(), getTeam()])
 
-export default function ExecutiveBoardPage() {
+  const jsonLd = team.length
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'Organization',
+        '@id': orgId,
+        member: team.map((m) => ({
+          '@type': 'Person',
+          name: m.name,
+          jobTitle: m.title,
+          affiliation: { '@type': 'CollegeOrUniversity', name: club.university },
+        })),
+      }
+    : undefined
+
   return (
     <Page
       path="/executive-board"
@@ -35,7 +39,11 @@ export default function ExecutiveBoardPage() {
       lede="This year’s Executive Board. Hover or tap a portrait for name, title, department and batch."
       jsonLd={jsonLd}
     >
-      <TeamGrid members={team} />
+      {team.length ? (
+        <TeamGrid members={team} />
+      ) : (
+        <EmptyState title="The board is being formed" body="Executive board profiles will appear here once the committee is confirmed." />
+      )}
     </Page>
   )
 }

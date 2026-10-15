@@ -1,9 +1,8 @@
 import type { Metadata } from 'next'
 import { Reveal } from '@/components/motion'
 import { Page } from '@/components/Page'
-import { Media } from '@/components/ui'
-import { club, gallery } from '@/data/club'
-import { getSiteSettings } from '@/lib/content'
+import { EmptyState, Media } from '@/components/ui'
+import { getGallery, getSiteSettings } from '@/lib/content'
 import { pageMeta } from '@/lib/seo'
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -16,28 +15,33 @@ export async function generateMetadata(): Promise<Metadata> {
   })
 }
 
-export default function GalleryPage() {
+export default async function GalleryPage() {
+  const gallery = await getGallery()
   return (
     <Page
       path="/gallery"
-      title="Thursdays in Room 304, and beyond."
-      lede="Sessions, builds and contest days from the last two years."
+      title="Workshops, builds and club days."
+      lede="Photos from the club’s sessions, projects and ceremonies."
     >
-      <ul className="mosaic">
-        {gallery.map((photo, i) => (
-          <Reveal as="li" key={photo.id} delay={(i % 2) * 80}>
-            <figure>
-              <div className="mosaic__frame">
-                <Media image={photo.image} alt={photo.title} seed={photo.seed} hue={photo.hue} />
-              </div>
-              <figcaption>
-                {photo.title}
-                <span>{photo.date}</span>
-              </figcaption>
-            </figure>
-          </Reveal>
-        ))}
-      </ul>
+      {gallery.length ? (
+        <ul className="mosaic">
+          {gallery.map((photo, i) => (
+            <Reveal as="li" key={photo.id} delay={(i % 2) * 80}>
+              <figure>
+                <div className="mosaic__frame">
+                  <Media image={photo.image} alt={photo.title} seed={photo.seed} hue={photo.hue} />
+                </div>
+                <figcaption>
+                  {photo.title}
+                  <span>{photo.date}</span>
+                </figcaption>
+              </figure>
+            </Reveal>
+          ))}
+        </ul>
+      ) : (
+        <EmptyState title="No photos yet" body="Photos from sessions, builds and club events will appear here." />
+      )}
     </Page>
   )
 }
