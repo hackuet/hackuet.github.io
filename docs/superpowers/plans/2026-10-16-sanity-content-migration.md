@@ -2323,7 +2323,7 @@ Imports: `getRegistrationOptions`, `getSiteSettings` from `@/lib/content`; `REGI
 ```bash
 npm run typecheck
 npm run build
-grep -o "Embedded systems &amp; microcontrollers" out/register/index.html   # track title from Sanity in built HTML
+grep -o "Embedded systems \\\\u0026 microcontrollers" out/register/index.html  # track title from Sanity in the serialized page payload (the form itself is client-rendered)
 grep -o "2k25" out/register/index.html                                      # batch option from Sanity
 ```
 
