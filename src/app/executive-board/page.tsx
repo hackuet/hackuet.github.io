@@ -1,13 +1,19 @@
+import type { Metadata } from 'next'
 import { Page } from '@/components/Page'
 import { TeamGrid } from '@/components/TeamGrid'
 import { club, team } from '@/data/club'
+import { getSiteSettings } from '@/lib/content'
 import { orgId, pageMeta } from '@/lib/seo'
 
-export const metadata = pageMeta({
-  title: 'Executive Board',
-  description: `The Executive Board of ${club.name}: the President, Vice President, General Secretary and the students who run the club this year.`,
-  path: '/executive-board',
-})
+export async function generateMetadata(): Promise<Metadata> {
+  const club = await getSiteSettings()
+  return pageMeta({
+    title: 'Executive Board',
+    description: `The Executive Board of ${club.name}: the students running the club this year.`,
+    path: '/executive-board',
+    club,
+  })
+}
 
 const jsonLd = {
   '@context': 'https://schema.org',

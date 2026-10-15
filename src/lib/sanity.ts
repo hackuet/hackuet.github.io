@@ -1,5 +1,5 @@
 import { createClient } from '@sanity/client'
-import imageUrlBuilder from '@sanity/image-url'
+import { createImageUrlBuilder } from '@sanity/image-url'
 import type { SanityImage } from './types'
 
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID
@@ -20,7 +20,7 @@ export const client = createClient({
   useCdn: process.env.NODE_ENV === 'production',
 })
 
-const builder = imageUrlBuilder(client)
+const builder = createImageUrlBuilder(client)
 
 /** CDN URL for a Sanity image, format-optimised; undefined when no image is set. */
 export function imageUrl(image: SanityImage | undefined, width: number): string | undefined {

@@ -1,13 +1,19 @@
+import type { Metadata } from 'next'
 import { EventsView } from '@/components/EventsView'
 import { Page } from '@/components/Page'
 import { club, events } from '@/data/club'
+import { getSiteSettings } from '@/lib/content'
 import { orgId, pageMeta } from '@/lib/seo'
 
-export const metadata = pageMeta({
-  title: 'Events',
-  description: `Upcoming and past events from ${club.name}: Verilog workshops, the annual Hardware Sprint, GPU computing sessions and open design reviews at KUET.`,
-  path: '/events',
-})
+export async function generateMetadata(): Promise<Metadata> {
+  const club = await getSiteSettings()
+  return pageMeta({
+    title: 'Events',
+    description: `Upcoming and past events from ${club.name}: workshops, sessions and project showcases at KUET.`,
+    path: '/events',
+    club,
+  })
+}
 
 // Build-time split for initial HTML and Event JSON-LD structured data.
 const today = new Date().toISOString().slice(0, 10)

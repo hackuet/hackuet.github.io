@@ -1,14 +1,20 @@
+import type { Metadata } from 'next'
 import { Reveal } from '@/components/motion'
 import { Page } from '@/components/Page'
 import { Media } from '@/components/ui'
 import { club, gallery } from '@/data/club'
+import { getSiteSettings } from '@/lib/content'
 import { pageMeta } from '@/lib/seo'
 
-export const metadata = pageMeta({
-  title: 'Photo gallery',
-  description: `Photos from ${club.name}: weekly Verilog sessions, hardware sprints, soldering clinics and contest days at KUET.`,
-  path: '/gallery',
-})
+export async function generateMetadata(): Promise<Metadata> {
+  const club = await getSiteSettings()
+  return pageMeta({
+    title: 'Photo gallery',
+    description: `Photos from ${club.name}: workshops, builds and club events at KUET.`,
+    path: '/gallery',
+    club,
+  })
+}
 
 export default function GalleryPage() {
   return (

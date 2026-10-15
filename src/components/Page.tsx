@@ -1,12 +1,12 @@
 import type { ReactNode } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
-import { routes } from '@/data/club'
+import { getNavigation } from '@/lib/content'
 import { breadcrumbLd, JsonLdScript } from '@/lib/seo'
 import { Reveal, Typewriter } from './motion'
 
 /** Shared frame for every section route: breadcrumb, typed title, content, previous/next. */
-export function Page({
+export async function Page({
   path,
   title,
   lede,
@@ -19,8 +19,9 @@ export function Page({
   jsonLd?: object
   children: ReactNode
 }) {
+  const routes = (await getNavigation()).filter((section) => section.href.startsWith('/'))
   const index = routes.findIndex((item) => item.href === path)
-  const current = routes[index]
+  const current = routes[index] ?? { key: path, href: path, addr: '0x00', label: title }
   const prev = routes[index - 1] ?? { href: '/', label: 'Home' }
   const next = routes[index + 1] ?? { href: '/register', label: 'Register' }
 

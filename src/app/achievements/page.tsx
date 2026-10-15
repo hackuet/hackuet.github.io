@@ -1,13 +1,19 @@
+import type { Metadata } from 'next'
 import { Reveal } from '@/components/motion'
 import { Page } from '@/components/Page'
 import { achievements, club } from '@/data/club'
+import { getSiteSettings } from '@/lib/content'
 import { pageMeta } from '@/lib/seo'
 
-export const metadata = pageMeta({
-  title: 'Achievements',
-  description: `Contest results and published work from ${club.name}: national digital design contests, FPGA and GPU projects by KUET students.`,
-  path: '/achievements',
-})
+export async function generateMetadata(): Promise<Metadata> {
+  const club = await getSiteSettings()
+  return pageMeta({
+    title: 'Achievements',
+    description: `Contest results and published work from ${club.short}, KUET.`,
+    path: '/achievements',
+    club,
+  })
+}
 
 const jsonLd = {
   '@context': 'https://schema.org',

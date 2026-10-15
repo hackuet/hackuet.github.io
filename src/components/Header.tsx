@@ -5,12 +5,12 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Menu, X } from 'lucide-react'
-import { club, nav } from '@/data/club'
+import type { Section, SiteSettings } from '@/lib/types'
 import { HomeLink } from './HomeLink'
 
 const DESKTOP = '(min-width: 1024px)'
 
-export function Header() {
+export function Header({ club, nav }: { club: SiteSettings; nav: Section[] }) {
   const pathname = usePathname() ?? '/'
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)

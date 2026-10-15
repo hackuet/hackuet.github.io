@@ -1,16 +1,22 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowRight, ArrowUpRight } from 'lucide-react'
 import { HeroCarousel } from '@/components/HeroCarousel'
 import { Reveal } from '@/components/motion'
 import { SectionHead } from '@/components/ui'
 import { club, history, mission, routes, vision } from '@/data/club'
+import { getSiteSettings } from '@/lib/content'
 import { pageMeta } from '@/lib/seo'
 
-export const metadata = pageMeta({
-  title: `${club.short}: ${club.name} | FPGA, GPU and chip design at KUET`,
-  description: club.description,
-  path: '/',
-})
+export async function generateMetadata(): Promise<Metadata> {
+  const club = await getSiteSettings()
+  return pageMeta({
+    title: `${club.short}: ${club.name} | Embedded systems, robotics and IoT at KUET`,
+    description: club.description,
+    path: '/',
+    club,
+  })
+}
 
 export default function HomePage() {
   return (
