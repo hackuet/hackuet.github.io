@@ -23,13 +23,13 @@
 - `output: 'export'` and `images: { unoptimized: true }` stay. All fetching happens during `next build`; no runtime fetching, no new client-side JS.
 - Client components (`'use client'` files) must never import `@/lib/content` or `@/lib/sanity` — only `@/lib/types`, `@/lib/sections`, `@/lib/registration`, or component modules. Sanity data reaches them exclusively as props from server components.
 - CI Node 20; studio never builds in CI.
-- **Verification approach:** this repo has no test runner, and the work is build-time data plumbing. Every task is verified with `npm run typecheck`, `npm run build`, greps against `out/` HTML, `npx sanity schema validate`, and targeted manual checks (browser dev tools where noted). Do not add a test framework. The Sanity free plan provides a single dataset (`production`), so failure-mode tests work by temporarily deleting a document with the helper script `delete-doc.mjs` and restoring it with the idempotent importer.
+- **Verification approach:** this repo has no test runner, and the work is build-time data plumbing. Every task is verified with `npm run typecheck`, `npm run build`, greps against `out/` HTML, `npx sanity schema validate`, and targeted manual checks (browser dev tools where noted). Do not add a test framework. Failure-mode tests build against the empty `staging` dataset; if that dataset is ever unavailable, fall back to temporarily deleting a document and restoring it with the idempotent importer.
 
 ## Review Focus
 
 Failure modes most likely to bite, each pinned to a test in the owning task:
 
-1. **Missing singleton** (documents deleted or renamed in Studio) → build must fail with an actionable message naming the document; GitHub Pages then keeps the last good deploy. *(Task 6, verified by temporarily deleting the document with `delete-doc.mjs` and building.)*
+1. **Missing singleton** (documents deleted or renamed in Studio) → build must fail with an actionable message naming the document; GitHub Pages then keeps the last good deploy. *(Task 6, verified by building against the empty `staging` dataset.)*
 2. **Zero hero slides** → home page must not crash (`slides[index].figure` on an empty array) — carousel renders nothing, page intact. *(Task 7, verified by emptying slides then restoring via the idempotent import script.)*
 3. **Entry without a photo** (e.g. Eyewear, whose report photo is a placeholder) → generated artwork renders, layout intact. *(Task 8, grep for `die-` in built HTML.)*
 4. **Missing env vars** → build error naming the variable and pointing at README, never a cryptic fetch failure. *(Task 6 — the first build that imports the client.)*
@@ -45,9 +45,9 @@ Failure modes most likely to bite, each pinned to a test in the owning task:
 - User input needed: Sanity account (login), project ID
 
 **Interfaces:**
-- Produces: a Sanity project with a `production` dataset (the free plan allows one — that is all this project needs); a runnable Studio in `studio/`; root scripts `npm run studio` and `npm run studio:deploy`.
+- Produces: a Sanity project with datasets `production` (real content) and `staging` (empty, for failure-mode tests) — **already created**: project ID `ky8bcwum`, both datasets exist; a runnable Studio in `studio/`; root scripts `npm run studio` and `npm run studio:deploy`.
 
-- [ ] **Step 1 (USER): create the Sanity project.** At https://sanity.io/manage → *Create project* → name `HACK KUET` → dataset `production` (the free plan has a single dataset, created with the project; if it is missing, create one named `production`). Copy the **Project ID** (format `abc12def`) — tell the agent this value.
+- [ ] **Step 1 (USER): create the Sanity project — DONE.** At https://sanity.io/manage → *Create project* → name `HACK KUET` → dataset `production`. Then in **Datasets → Create dataset** add `staging` (leave it empty). Copy the **Project ID** (format `abc12def`) — tell the agent this value. *(Executed: project ID `ky8bcwum`; datasets `production` and `staging` confirmed via `sanity dataset list`; CLI login done.)*
 
 - [ ] **Step 2 (USER): log in and scaffold.** From the repo root:
 
@@ -1041,7 +1041,6 @@ git commit -m "feat: add Sanity client, content types and typed fetchers"
 
 **Files:**
 - Create: `~/Documents/hack-report/import-to-sanity.mjs` (**outside the repo** — it embeds captions and mappings; the repo stays content-free)
-- Create: `~/Documents/hack-report/delete-doc.mjs` (one-document delete helper for the Task 6 failure test)
 - Create: `~/Documents/hack-report/package.json` + `node_modules` (via `npm init -y` & install)
 
 **Interfaces:**
@@ -1266,34 +1265,6 @@ main().catch((error) => {
   console.error(error)
   process.exit(1)
 })
-```
-
-Also create `~/Documents/hack-report/delete-doc.mjs` — a one-document delete helper used only by the Task 6 missing-singleton failure test:
-
-```js
-// Deletes one document by id — used only for the missing-singleton build test
-// (free plan: one dataset, so the test deletes and restores instead of using
-// a second dataset). Usage:
-//   SANITY_PROJECT_ID=xxxx SANITY_WRITE_TOKEN=skxxxx node delete-doc.mjs <document-id>
-import { createClient } from '@sanity/client'
-
-const { SANITY_PROJECT_ID, SANITY_DATASET = 'production', SANITY_WRITE_TOKEN } = process.env
-const id = process.argv[2]
-if (!SANITY_PROJECT_ID || !SANITY_WRITE_TOKEN || !id) {
-  console.error('Usage: SANITY_PROJECT_ID=xxxx SANITY_WRITE_TOKEN=skxxxx node delete-doc.mjs <document-id>')
-  process.exit(1)
-}
-
-const client = createClient({
-  projectId: SANITY_PROJECT_ID,
-  dataset: SANITY_DATASET,
-  apiVersion: '2026-10-01',
-  token: SANITY_WRITE_TOKEN,
-  useCdn: false,
-})
-
-await client.delete(id)
-console.log('deleted', id)
 ```
 
 - [ ] **Step 4 (USER): run the import.**
@@ -1667,13 +1638,10 @@ grep -o "Learn hardware by building it." out/index.html          # footer taglin
 grep -o "None published yet." out/llms.txt                        # achievements empty state in llms.txt
 grep -o "/achievements/" out/sitemap.xml                          # sitemap still lists sections
 NEXT_PUBLIC_SANITY_PROJECT_ID= npm run build                      # expected: FAIL with "Missing Sanity configuration…" naming both vars
-# missing-singleton guard: remove the document, build, then restore it
-(cd ~/Documents/hack-report && SANITY_PROJECT_ID=<PROJECT_ID> SANITY_WRITE_TOKEN=sk... node delete-doc.mjs siteSettings)
-npm run build                                                     # expected: FAIL with 'Sanity: the "Site settings" document is missing…'
-(cd ~/Documents/hack-report && SANITY_PROJECT_ID=<PROJECT_ID> SANITY_WRITE_TOKEN=sk... node import-to-sanity.mjs)   # restores seed values
+NEXT_PUBLIC_SANITY_DATASET=staging npm run build                  # expected: FAIL with 'Sanity: the "Site settings" document is missing…'
 ```
 
-The two failure builds must fail fast with those exact messages — that is Review Focus #1 and #4 covered. Note: the restore step rewrites `siteSettings` with the seeded values, so run this test before fine-tuning the document in the Studio (or re-apply your edits afterwards).
+The two failure builds must fail fast with those exact messages — that is Review Focus #1 and #4 covered.
 
 - [ ] **Step 10: commit.**
 
