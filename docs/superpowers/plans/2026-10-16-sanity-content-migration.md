@@ -1045,7 +1045,7 @@ git commit -m "feat: add Sanity client, content types and typed fetchers"
 
 **Interfaces:**
 - Consumes: the production dataset + a write token; `images/manifest.json`; `images/figure-*.jpeg`.
-- Produces: uploaded assets and documents with deterministic IDs — `siteSettings`, `homeStory`, `registrationOptions`, `navigation` singletons; `heroSlide-1..4`; `event-krpc|ros2|servo|vla|ignition|webinar|farewell`; `project-<slug>` × 9; `gallery-fig-NN` × 26. Re-running is safe: every write is `createOrReplace`.
+- Produces: uploaded assets and documents with deterministic IDs — `siteSettings`, `homeStory`, `registrationOptions`, `navigation` singletons; `heroSlide-1..4`; `event-krpc|ros2|servo|vla|ignition|webinar|farewell`; `project-<slug>` × 9; `gallery-fig-NN` × 24 (only figures whose image file exists; the manifest's 7 placeholder entries are skipped). Re-running is safe: every write is `createOrReplace`.
 
 - [ ] **Step 1: prepare the folder.**
 
@@ -1274,9 +1274,9 @@ cd ~/Documents/hack-report
 SANITY_PROJECT_ID=<PROJECT_ID> SANITY_WRITE_TOKEN=sk... node import-to-sanity.mjs
 ```
 
-Expected: 26 `uploaded figure` lines, then `Done: { heroSlide: 4, galleryPhoto: 26, project: 9, event: 7, siteSettings: 1, homeStory: 1, registrationOptions: 1, navigation: 1 }`.
+Expected: 24 `uploaded figure` lines, then `Done: { heroSlide: 4, galleryPhoto: 24, project: 9, event: 7, siteSettings: 1, homeStory: 1, registrationOptions: 1, navigation: 1 }`.
 
-- [ ] **Step 5: verify idempotency.** Run the same command again. Expected: same counts, no duplicates — open the Studio: Gallery shows 26 photos with captions, Projects 9 (EyeMech first), Events 7 (farewell last with a “update date” note), Hero slides 4, and the four pinned singletons.
+- [ ] **Step 5: verify idempotency.** Run the same command again. Expected: same counts, no duplicates — open the Studio: Gallery shows 24 photos with captions, Projects 9 (EyeMech first), Events 7 (farewell last with a “update date” note), Hero slides 4, and the four pinned singletons.
 
 - [ ] **Step 6: hand the follow-up list to the user** — values only they can supply (edit in the Studio):
 
