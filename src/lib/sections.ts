@@ -7,6 +7,7 @@ export const REGISTER_ADDR = '0x0B'
 
 const ROUTE_DEFS: Section[] = [
   { key: 'about', href: '/#history', addr: '0x01', label: 'About', blurb: 'How the club started and why it exists.' },
+  { key: 'projects', href: '/projects', addr: '0x05', label: 'Projects', blurb: 'Member-built hardware, robots and IoT systems.' },
   { key: 'achievements', href: '/achievements', addr: '0x06', label: 'Achievements', blurb: 'Contest results and published work.' },
   { key: 'events', href: '/events', addr: '0x07', label: 'Events', blurb: 'Workshops, sessions and what is coming next.' },
   { key: 'gallery', href: '/gallery', addr: '0x08', label: 'Gallery', blurb: 'Sessions, builds and contest days.' },
