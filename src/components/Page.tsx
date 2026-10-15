@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 import { getNavigation } from '@/lib/content'
+import { isPageHref } from '@/lib/sections'
 import { breadcrumbLd, JsonLdScript } from '@/lib/seo'
 import { Reveal, Typewriter } from './motion'
 
@@ -19,7 +20,7 @@ export async function Page({
   jsonLd?: object
   children: ReactNode
 }) {
-  const routes = (await getNavigation()).filter((section) => section.href.startsWith('/'))
+  const routes = (await getNavigation()).filter((section) => isPageHref(section.href))
   const index = routes.findIndex((item) => item.href === path)
   const current = routes[index] ?? { key: path, href: path, addr: '0x00', label: title }
   const prev = routes[index - 1] ?? { href: '/', label: 'Home' }

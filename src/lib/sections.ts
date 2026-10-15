@@ -25,7 +25,14 @@ export function mergeNavigation(items: NavItem[]): Section[] {
   })
 }
 
+/** True for hrefs that are real pages: in-site routes with no fragment. The
+    about and contact anchors point into the home page, so they stay out of the
+    sitemap and the page pager; the home Explore list shows every section. */
+export function isPageHref(href: string): boolean {
+  return href.startsWith('/') && !href.includes('#')
+}
+
 /** The named section routes (about and contact are anchors on the home page). */
 export function routeSections(): Section[] {
-  return ROUTE_DEFS.filter((section) => section.href.startsWith('/'))
+  return ROUTE_DEFS.filter((section) => isPageHref(section.href))
 }

@@ -194,7 +194,7 @@ export function RegisterForm({ club, options }: { club: SiteSettings; options: R
           </div>
         </div>
         <aside className="register__pass" aria-label="Your member pass">
-          <MemberPass data={pass} issued tracks={options.tracks} />
+          <MemberPass data={pass} issued tracks={options.tracks} short={club.short} />
         </aside>
 
         {confirming && <Modal
@@ -368,7 +368,7 @@ export function RegisterForm({ club, options }: { club: SiteSettings; options: R
       </form>
 
       <aside className="register__pass" aria-label="Member pass preview">
-        <MemberPass data={values} issued={false} tracks={options.tracks} />
+        <MemberPass data={values} issued={false} tracks={options.tracks} short={club.short} />
         <p className="field__hint">Your pass fills in as you type.</p>
       </aside>
     </div>

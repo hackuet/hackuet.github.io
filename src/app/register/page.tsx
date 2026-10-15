@@ -32,7 +32,7 @@ export default async function RegisterPage() {
               </li>
             </ol>
           </nav>
-          <Typewriter id="register-title" text="Join HACK." />
+          <Typewriter id="register-title" text={`Join ${club.short}.`} />
           <Reveal>
             <p className="lede">
               Open to every KUET department, no experience needed. {club.intake} closes {club.intakeCloses}.

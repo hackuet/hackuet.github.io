@@ -17,7 +17,8 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     short, name, university, tagline, description, founded, email, room, address, mapUrl, meets, intake, intakeCloses, keywords
   }`)
   if (!doc) required('the "Site settings" document')
-  return doc
+  // The keywords field is optional in the Studio; keep the type promise.
+  return { ...doc, keywords: doc.keywords ?? [] }
 }
 
 type SlideDoc = Omit<Slide, 'id' | 'image'> & { _id: string; image?: SanityImage }
