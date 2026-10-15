@@ -5,12 +5,12 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Menu, X } from 'lucide-react'
-import { club, nav } from '@/data/club'
+import type { Section, SiteSettings } from '@/lib/types'
 import { HomeLink } from './HomeLink'
 
 const DESKTOP = '(min-width: 1024px)'
 
-export function Header() {
+export function Header({ club, nav }: { club: SiteSettings; nav: Section[] }) {
   const pathname = usePathname() ?? '/'
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
@@ -51,12 +51,6 @@ export function Header() {
 
   return (
     <header className={`header${scrolled || open ? ' is-raised' : ''}`}>
-      <div className="dev-banner" role="status" aria-label="Development site announcement">
-        <div className="dev-banner__in">
-          <span className="dev-banner__badge">Under Development</span>
-          <span>This site is currently in active development. Displayed content and member details are placeholder data.</span>
-        </div>
-      </div>
       <div className="wrap header__in">
         <HomeLink className="brand" onNavigate={close} label={`${club.short}, ${club.name}: home`}>
           <Image className="brand__logo" src="/logo.svg" alt="" width={383} height={286} priority />
