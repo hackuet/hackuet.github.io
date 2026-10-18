@@ -9,6 +9,8 @@ export const websiteId = `${siteUrl}/#website`
 export function pageMeta({ title, description, path }: { title: string; description: string; path: string }): Metadata {
   const url = path === '/' ? '/' : `${path}/`
   const fullTitle = path === '/' ? title : `${title} | ${club.short}, KUET`
+  const ogImageUrl = `${siteUrl}/opengraph-image.jpg`
+
   return {
     title: path === '/' ? { absolute: title } : title,
     description,
@@ -20,8 +22,21 @@ export function pageMeta({ title, description, path }: { title: string; descript
       title: fullTitle,
       description,
       url,
+      images: [
+        {
+          url: ogImageUrl,
+          width: 1200,
+          height: 630,
+          alt: `${club.name} (${club.short})`,
+        },
+      ],
     },
-    twitter: { card: 'summary', title: fullTitle, description },
+    twitter: {
+      card: 'summary_large_image',
+      title: fullTitle,
+      description,
+      images: [ogImageUrl],
+    },
   }
 }
 
@@ -49,6 +64,7 @@ export const organizationLd = {
   slogan: club.tagline,
   foundingDate: String(club.founded),
   email: club.email,
+  sameAs: ['https://github.com/hackuet'],
   knowsAbout: ['FPGA', 'Verilog', 'Digital design', 'GPU computing', 'RISC-V', 'Computer architecture', 'Embedded systems'],
   parentOrganization: {
     '@type': 'CollegeOrUniversity',
