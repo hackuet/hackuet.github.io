@@ -308,7 +308,7 @@ export const team: Member[] = [
   { id: 'br24-1', name: 'Turjo Deb', title: 'Batch Representative (2K24)', roll: '2407084', batch: '2K24', seed: 348, hue: hues[3], image: 'https://cdn.sanity.io/images/xcn3cj7z/production/4ef2aaba4e1b630d05ef6c81dcea348050b32e4e-563x953.webp' },
   { id: 'br24-2', name: 'Noor E Jannat Mawa', title: 'Batch Representative (2K24)', roll: '2407095', batch: '2K24', seed: 349, hue: hues[0], image: 'https://cdn.sanity.io/images/xcn3cj7z/production/7d076b51649aff329633109da8355e9c5fc5d1ca-548x927.webp' },
   { id: 'br24-3', name: 'Parthib Chanda Dibbo', title: 'Batch Representative (2K24)', roll: '2407093', batch: '2K24', seed: 350, hue: hues[1], image: 'https://cdn.sanity.io/images/xcn3cj7z/production/080d55a2d843ad7857ae443d20e2078047a69e40-676x914.webp' },
-  { id: 'br24-4', name: 'Bandhon Kumar Sutrodhar', title: 'Batch Representative (2K24)', roll: '2407054', batch: '2K24', seed: 351, hue: hues[2], image: 'https://cdn.sanity.io/images/xcn3cj7z/production/e5ece42786fa110f30ad8ab26f1371bc24da9f0d-786x860.webp' },
+  { id: 'br24-4', name: 'Bandhon Kumar Sutrodhar', title: 'Batch Representative (2K24)', roll: '2407054', batch: '2K24', seed: 351, hue: hues[2] },
   { id: 'br24-5', name: 'Ayesha Yesmin Moumita', title: 'Batch Representative (2K24)', roll: '2407104', batch: '2K24', seed: 352, hue: hues[3] },
   { id: 'br24-6', name: 'Thowai Hla Gya Marma', title: 'Batch Representative (2K24)', roll: '2407121', batch: '2K24', seed: 353, hue: hues[0], image: 'https://cdn.sanity.io/images/xcn3cj7z/production/2b86aebf4f102bcb38f9813bcb696b60e7a09f4a-540x970.webp' },
   // Performance Analyzer
@@ -318,7 +318,7 @@ export const team: Member[] = [
   { id: 'pa-4', name: 'Md. Farhaduzzaman Rume', title: 'Performance Analyzer', roll: '2207080', batch: '2K22', seed: 357, hue: hues[0], image: 'https://cdn.sanity.io/images/xcn3cj7z/production/de302438e19c5dbac8261db898b702bd01017e38-650x895.webp' },
   { id: 'pa-5', name: 'Maisha Oaima Islam', title: 'Performance Analyzer', roll: '2307102', batch: '2K23', seed: 358, hue: hues[1], image: 'https://cdn.sanity.io/images/xcn3cj7z/production/bd7d14fa2de3407cafda8225d2267fdfb4cdaf59-661x790.webp' },
   { id: 'pa-6', name: 'Fariha Tabassum', title: 'Performance Analyzer', roll: '2207034', batch: '2K22', seed: 359, hue: hues[2] },
-  { id: 'pa-7', name: 'Arnob Dam', title: 'Performance Analyzer', roll: '2307091', batch: '2K23', seed: 360, hue: hues[3], image: 'https://cdn.sanity.io/images/xcn3cj7z/production/4ba0cd2380878013dfd3c0a697ac9642893ec91c-801x860.webp' },
+  { id: 'pa-7', name: 'Arnob Dam', title: 'Performance Analyzer', roll: '2307091', batch: '2K23', seed: 360, hue: hues[3] },
   { id: 'pa-8', name: 'Md Abu Sufian', title: 'Performance Analyzer', roll: '2207072', batch: '2K22', seed: 361, hue: hues[0], image: 'https://cdn.sanity.io/images/xcn3cj7z/production/128cbb22ef7e33317ea8902b184691f7798b2483-676x923.webp' },
   { id: 'pa-9', name: 'Alfaz Rahman', title: 'Performance Analyzer', roll: '2303031', batch: '2K23', seed: 362, hue: hues[1], image: 'https://cdn.sanity.io/images/xcn3cj7z/production/3e183d93937c594a64ba7b9d2bc525e53115b41f-501x911.webp' },
   // Senior Executive
