@@ -16,8 +16,8 @@ export function TeamGrid({ members }: { members: Member[] }) {
   return (
     <ul className="team">
       {members.map((m) => {
-        const hue = m.hue ?? getHueFromName(m.name)
-        const seed = m.seed ?? getNameSeed(m.name)
+        const hue = getHueFromName(m.name)
+        const seed = getNameSeed(m.name)
         return (
           <li key={m.id}>
             <article className="member" tabIndex={0} aria-label={`${m.name}, ${m.title}${m.designation ? `, ${m.designation}` : ''}${m.batch ? `, batch ${m.batch}` : ''}`}>

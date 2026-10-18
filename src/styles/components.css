@@ -478,6 +478,46 @@ select.input {
   }
 }
 
+/* ---- Dev Banner ---- */
+
+.dev-banner {
+  background: #fff8e6;
+  color: #7a4b04;
+  border-bottom: 1px solid #f3d99b;
+  font-size: var(--text-xs);
+  min-height: var(--banner-h);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--s-1) var(--gutter);
+  position: relative;
+  z-index: 1;
+}
+
+.dev-banner__in {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  line-height: 1.4;
+}
+
+.dev-banner__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #fde8b3;
+  color: #633c00;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 1px 6px;
+  border-radius: var(--r-xs);
+  font-size: 0.6875rem;
+  white-space: nowrap;
+}
+
 /* ---- Header ---- */
 
 .header {
