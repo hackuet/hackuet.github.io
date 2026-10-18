@@ -1,9 +1,10 @@
 import type { MetadataRoute } from 'next'
-import { club } from '@/data/club'
+import { getClub } from '@/data/site'
 
 export const dynamic = 'force-static'
 
-export default function manifest(): MetadataRoute.Manifest {
+export default async function manifest(): Promise<MetadataRoute.Manifest> {
+  const club = await getClub()
   return {
     name: club.name,
     short_name: club.short,

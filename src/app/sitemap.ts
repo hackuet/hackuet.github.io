@@ -1,10 +1,11 @@
 import type { MetadataRoute } from 'next'
-import { routes } from '@/data/club'
+import { getRoutes } from '@/data/site'
 import { siteUrl } from '@/lib/site'
 
 export const dynamic = 'force-static'
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const routes = await getRoutes()
   const lastModified = new Date()
   return [
     { url: `${siteUrl}/`, lastModified, changeFrequency: 'monthly', priority: 1 },

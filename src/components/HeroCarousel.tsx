@@ -3,12 +3,12 @@
 import { useRef, useState, type KeyboardEvent, type TouchEvent } from 'react'
 import Link from 'next/link'
 import { ArrowRight, ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react'
-import { slides } from '@/data/club'
+import type { Slide } from '@/data/site'
 import { LazyBackground } from './LazyBackground'
 import { Typewriter } from './motion'
 import { Media } from './ui'
 
-export function HeroCarousel() {
+export function HeroCarousel({ slides }: { slides: Slide[] }) {
   const [index, setIndex] = useState(0)
   const [userPaused, setUserPaused] = useState(false)
   const [focusWithin, setFocusWithin] = useState(false)
@@ -31,6 +31,8 @@ export function HeroCarousel() {
     touchX.current = null
     if (Math.abs(dx) > 48) go(index + (dx < 0 ? 1 : -1))
   }
+
+  if (count === 0) return null
 
   return (
     <section

@@ -3,30 +3,41 @@ import { ArrowRight, ArrowUpRight } from 'lucide-react'
 import { HeroCarousel } from '@/components/HeroCarousel'
 import { Reveal } from '@/components/motion'
 import { SectionHead } from '@/components/ui'
-import { club, history, mission, routes, vision } from '@/data/club'
+import { getClub, getRoutes, getSlides, getStory } from '@/data/site'
 import { pageMeta } from '@/lib/seo'
 
-export const metadata = pageMeta({
-  title: `${club.short}: ${club.name} | FPGA, GPU and chip design at KUET`,
-  description: club.description,
-  path: '/',
-})
+export async function generateMetadata() {
+  const club = await getClub()
+  return pageMeta({
+    title: `${club.short}: ${club.name} | FPGA, GPU and chip design at KUET`,
+    description: club.description,
+    path: '/',
+    short: club.short,
+  })
+}
 
-export default function HomePage() {
+export default async function HomePage() {
+  const [club, slides, story, routes] = await Promise.all([
+    getClub(),
+    getSlides(),
+    getStory(),
+    getRoutes(),
+  ])
+
   return (
     <>
-      <HeroCarousel />
+      <HeroCarousel slides={slides} />
 
       <section id="history" className="section" aria-labelledby="history-title">
         <div className="wrap split">
-          <SectionHead id="history-title" addr="0x01" label="History" title={history.title} />
+          <SectionHead id="history-title" addr="0x01" label="History" title={story.historyTitle} />
           <div>
             <Reveal>
-              <p className="lede">{history.lede}</p>
+              <p className="lede">{story.historyLede}</p>
             </Reveal>
             <ol className="timeline">
-              {history.milestones.map((m, i) => (
-                <Reveal as="li" key={m.year} delay={i * 60}>
+              {story.milestones.map((m, i) => (
+                <Reveal as="li" key={`${m.year}-${m.title}`} delay={i * 60}>
                   <span className="timeline__year">{m.year}</span>
                   <div>
                     <h3>{m.title}</h3>
@@ -45,10 +56,10 @@ export default function HomePage() {
             <SectionHead id="mission-title" addr="0x02" label="Mission" title="What we are here to do." />
             <div>
               <Reveal>
-                <p className="statement">{mission.statement}</p>
+                <p className="statement">{story.missionStatement}</p>
               </Reveal>
               <ol className="rows rows--numbered">
-                {mission.commitments.map((c, i) => (
+                {story.missionItems.map((c, i) => (
                   <Reveal as="li" key={c.title} delay={i * 60}>
                     <h3>{c.title}</h3>
                     <p>{c.body}</p>
@@ -64,10 +75,10 @@ export default function HomePage() {
             <SectionHead id="vision-title" addr="0x03" label="Vision" title="Where this is going." />
             <div>
               <Reveal>
-                <p className="statement">{vision.statement}</p>
+                <p className="statement">{story.visionStatement}</p>
               </Reveal>
               <ol className="rows rows--numbered">
-                {vision.goals.map((g, i) => (
+                {story.visionItems.map((g, i) => (
                   <Reveal as="li" key={g.title} delay={i * 60}>
                     <h3>{g.title}</h3>
                     <p>{g.body}</p>
@@ -84,7 +95,7 @@ export default function HomePage() {
           <SectionHead id="explore-title" addr="0x04" label="Explore" title="See the work and the people." />
           <ul className="rows index">
             {routes.map((item, i) => (
-              <Reveal as="li" key={item.href} delay={i * 50}>
+              <Reveal as="li" key={item.key} delay={i * 50}>
                 <Link href={item.href}>
                   <span className="index__addr">{item.addr}</span>
                   <span className="index__label">{item.label}</span>

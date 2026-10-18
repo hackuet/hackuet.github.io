@@ -38,6 +38,9 @@ jobs:
         run: npm run build
         env:
           NEXT_PUBLIC_SITE_URL: https://hackuet.github.io
+          # Public values only — the project ID ships in the client bundle.
+          NEXT_PUBLIC_SANITY_PROJECT_ID: ky8bcwum
+          NEXT_PUBLIC_SANITY_DATASET: production
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

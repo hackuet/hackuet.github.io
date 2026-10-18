@@ -1,14 +1,34 @@
-import { achievements, club, events, history, mission, routes, team, tracks, vision } from '@/data/club'
+import {
+  getAchievements,
+  getClub,
+  getEvents,
+  getProjects,
+  getRegistrationOptions,
+  getRoutes,
+  getStory,
+  getTeam,
+} from '@/data/site'
 import { siteUrl } from '@/lib/site'
 
 export const dynamic = 'force-static'
 
 // /llms.txt: a plain-Markdown summary of the site for language models and AI crawlers,
-// generated from the same data file the pages use so it can never drift from them.
-export function GET() {
+// generated from the same Sanity documents the pages render, so it can never drift from them.
+export async function GET() {
+  const [club, story, tracks, achievements, events, projects, team, routes] = await Promise.all([
+    getClub(),
+    getStory(),
+    getRegistrationOptions(),
+    getAchievements(),
+    getEvents(),
+    getProjects(),
+    getTeam(),
+    getRoutes(),
+  ])
+
   const body = `# ${club.name} (${club.short})
 
-> ${club.description} Based at ${club.university}, Khulna, Bangladesh. Founded in ${club.founded}.
+> ${club.description} Based at ${club.university}, Khulna, Bangladesh.${club.founded ? ` Founded in ${club.founded}.` : ''}
 
 ## Key facts
 
@@ -17,27 +37,30 @@ export function GET() {
 - University: ${club.university} (KUET)
 - Location: ${club.room}, ${club.address}
 - Weekly sessions: ${club.meets}
-- Membership: free, open to students of every KUET department, no experience required
 - Current intake: ${club.intake}, closes ${club.intakeCloses}
 - Contact: ${club.email}
 
 ## What members work on
 
-${tracks.map((t) => `- ${t.title}: ${t.note}`).join('\n')}
+${tracks.tracks.map((t) => `- ${t.title}: ${t.note}`).join('\n')}
 
 ## Mission
 
-${mission.statement}
+${story.missionStatement}
 
-${mission.commitments.map((c) => `- ${c.title}: ${c.body}`).join('\n')}
+${story.missionItems.map((c) => `- ${c.title}: ${c.body}`).join('\n')}
 
 ## Vision
 
-${vision.statement}
+${story.visionStatement}
 
 ## History
 
-${history.milestones.map((m) => `- ${m.year}, ${m.title}: ${m.body}`).join('\n')}
+${story.milestones.map((m) => `- ${m.year}, ${m.title}: ${m.body}`).join('\n')}
+
+## Projects
+
+${projects.map((p) => `- ${p.title}: ${p.body}`).join('\n')}
 
 ## Achievements
 
@@ -54,8 +77,9 @@ ${team.map((m) => `- ${m.title}: ${m.name}${m.designation ? ` (${m.designation})
 ## Pages
 
 - [Home](${siteUrl}/): overview of the club
-${routes.map((item) => `- [${item.label}](${siteUrl}${item.href}/): ${item.blurb}`).join('\n')}
+${routes.map((item) => `- [${item.label}](${siteUrl}${item.href}/): ${item.blurb ?? ''}`).join('\n')}
 - [Register](${siteUrl}/register/): join the club
 `
+
   return new Response(body, { headers: { 'Content-Type': 'text/plain; charset=utf-8' } })
 }

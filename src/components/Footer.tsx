@@ -1,9 +1,9 @@
 import Link from 'next/link'
-import { club, nav } from '@/data/club'
+import type { Club, NavItem } from '@/data/site'
 import { HomeLink } from './HomeLink'
 import { Mark } from './ui'
 
-export function Footer() {
+export function Footer({ club, nav }: { club: Club; nav: NavItem[] }) {
   return (
     <footer className="footer">
       <div className="wrap footer__in">
@@ -20,7 +20,7 @@ export function Footer() {
           <p className="footer__label">Explore</p>
           <ul>
             {nav.map((item) => (
-              <li key={item.href}>
+              <li key={item.key}>
                 <Link href={item.href}>{item.label}</Link>
               </li>
             ))}

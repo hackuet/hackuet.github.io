@@ -336,6 +336,12 @@
   background: var(--bg-tint);
 }
 
+/* Images arrive uncropped so faces survive; bias the crop towards the top third
+   rather than dead centre, which would cut heads off portrait photos. */
+.mosaic__frame .media {
+  object-position: center 25%;
+}
+
 .mosaic figcaption {
   display: flex;
   justify-content: space-between;
@@ -839,22 +845,31 @@
 
 .member__info dl {
   display: flex;
-  gap: var(--s-6);
+  flex-wrap: wrap;
+  gap: var(--s-2) var(--s-5);
   margin-top: var(--s-2);
   padding-top: var(--s-3);
   border-top: 1px solid rgba(255, 255, 255, 0.16);
 }
 
+/* A long faculty designation must not squeeze the roll and batch out of the row. */
+.member__info dl > div:first-child {
+  flex-basis: 100%;
+}
+
 .member__info dt {
   font-family: var(--font-mono);
-  font-size: 0.6875rem;
+  font-size: 0.625rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: #93a3c9;
 }
 
 .member__info dd {
+  font-size: 0.8125rem;
+  line-height: 1.35;
   font-weight: 600;
+  overflow-wrap: anywhere;
 }
 
 .member__role {

@@ -1,4 +1,4 @@
-import type { Member } from '@/data/club'
+import type { Member } from '@/data/site'
 import { Media } from './ui'
 
 function initials(name: string) {

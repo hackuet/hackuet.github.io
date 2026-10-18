@@ -1,4 +1,15 @@
-import { batches, departments, tracks, type TrackId } from '@/data/club'
+/**
+ * Client-side validation for the registration form. The allowed departments,
+ * batches and tracks are fetched from Sanity and passed in, so the rules always
+ * match what the Studio currently publishes.
+ */
+export type TrackOption = { id: string; title: string; note?: string }
+
+export type RegistrationOptions = {
+  departments: string[]
+  batches: string[]
+  tracks: TrackOption[]
+}
 
 export type Registration = {
   name: string
@@ -7,7 +18,7 @@ export type Registration = {
   batch: string
   email: string
   phone: string
-  track: TrackId | ''
+  track: string
   note: string
 }
 
@@ -30,7 +41,11 @@ const KEY = 'hack:pass:v1'
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 const BD_PHONE = /^(\+?880|0)1[3-9]\d{8}$/
 
-export function validateField(field: keyof Registration, v: Registration): string | undefined {
+export function validateField(
+  field: keyof Registration,
+  v: Registration,
+  options: RegistrationOptions,
+): string | undefined {
   switch (field) {
     case 'name':
       if (v.name.trim().length < 3) return 'Enter your full name.'
@@ -42,10 +57,10 @@ export function validateField(field: keyof Registration, v: Registration): strin
       return
     }
     case 'department':
-      if (!departments.includes(v.department)) return 'Choose your department.'
+      if (!options.departments.includes(v.department)) return 'Choose your department.'
       return
     case 'batch':
-      if (!batches.includes(v.batch)) return 'Choose your batch.'
+      if (!options.batches.includes(v.batch)) return 'Choose your batch.'
       return
     case 'email':
       if (!EMAIL.test(v.email.trim())) return 'Enter an email address we can reach you on.'
@@ -55,7 +70,7 @@ export function validateField(field: keyof Registration, v: Registration): strin
         return 'Enter a Bangladeshi mobile number, or leave this blank.'
       return
     case 'track':
-      if (!tracks.some((t) => t.id === v.track)) return 'Pick the track you want to start with.'
+      if (!options.tracks.some((t) => t.id === v.track)) return 'Pick the track you want to start with.'
       return
     case 'note':
       if (v.note.length > 300) return 'Keep this under 300 characters.'
@@ -63,10 +78,10 @@ export function validateField(field: keyof Registration, v: Registration): strin
   }
 }
 
-export function validate(v: Registration): Errors {
+export function validate(v: Registration, options: RegistrationOptions): Errors {
   const errors: Errors = {}
   for (const field of Object.keys(v) as (keyof Registration)[]) {
-    const message = validateField(field, v)
+    const message = validateField(field, v, options)
     if (message) errors[field] = message
   }
   return errors
@@ -76,7 +91,7 @@ export function passId(roll: string): string {
   return /^\d{7}$/.test(roll) ? `HACK-${roll.slice(0, 2)}-${roll.slice(2)}` : 'HACK-00-00000'
 }
 
-export function isIssuedPass(obj: unknown): obj is IssuedPass {
+export function isIssuedPass(obj: unknown, options: RegistrationOptions): obj is IssuedPass {
   if (!obj || typeof obj !== 'object') return false
   const p = obj as Record<string, unknown>
   return (
@@ -86,25 +101,25 @@ export function isIssuedPass(obj: unknown): obj is IssuedPass {
     typeof p.roll === 'string' &&
     /^\d{7}$/.test(p.roll) &&
     typeof p.department === 'string' &&
-    departments.includes(p.department) &&
+    options.departments.includes(p.department) &&
     typeof p.batch === 'string' &&
-    batches.includes(p.batch) &&
+    options.batches.includes(p.batch) &&
     typeof p.email === 'string' &&
     EMAIL.test(p.email.trim()) &&
     typeof p.phone === 'string' &&
     typeof p.track === 'string' &&
-    tracks.some((t) => t.id === p.track) &&
+    options.tracks.some((t) => t.id === p.track) &&
     typeof p.note === 'string' &&
     typeof p.issuedAt === 'string'
   )
 }
 
-export function loadPass(): IssuedPass | null {
+export function loadPass(options: RegistrationOptions): IssuedPass | null {
   try {
     const raw = localStorage.getItem(KEY)
     if (!raw) return null
     const parsed = JSON.parse(raw)
-    if (isIssuedPass(parsed)) {
+    if (isIssuedPass(parsed, options)) {
       return parsed
     }
     // Invalid shape in localStorage: clean up to avoid corrupted state
