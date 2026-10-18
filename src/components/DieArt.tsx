@@ -4,6 +4,26 @@
 
 export type Hue = 'navy' | 'blue' | 'cyan' | 'sky'
 
+export const HUES: Hue[] = ['navy', 'blue', 'cyan', 'sky']
+
+/** Deterministically derive a palette hue from a string (e.g. member name) via hash */
+export function getHueFromName(name: string): Hue {
+  let hash = 0
+  for (let i = 0; i < name.length; i++) {
+    hash = ((hash * 31) + name.charCodeAt(i)) >>> 0
+  }
+  return HUES[hash % HUES.length]
+}
+
+/** Deterministically derive a numeric seed from a string (e.g. member name) via hash */
+export function getNameSeed(name: string): number {
+  let hash = 0
+  for (let i = 0; i < name.length; i++) {
+    hash = (Math.imul(31, hash) + name.charCodeAt(i)) | 0
+  }
+  return (Math.abs(hash) % 10000) + 1
+}
+
 const PALETTES: Record<Hue, { base: string; blocks: string[]; pad: string }> = {
   navy: { base: '#0f1b3d', blocks: ['#1672c4', '#34509f', '#38b8cc', '#9ad8e8'], pad: '#9ad8e8' },
   blue: { base: '#1672c4', blocks: ['#0f5a9e', '#9ad8e8', '#ffffff', '#34509f'], pad: '#dcebf8' },

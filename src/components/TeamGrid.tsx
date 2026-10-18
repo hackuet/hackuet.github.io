@@ -1,4 +1,5 @@
 import type { Member } from '@/data/club'
+import { getHueFromName, getNameSeed } from './DieArt'
 import { Media } from './ui'
 
 export function getInitials(name: string): string {
@@ -14,16 +15,19 @@ export function getInitials(name: string): string {
 export function TeamGrid({ members }: { members: Member[] }) {
   return (
     <ul className="team">
-      {members.map((m) => (
-        <li key={m.id}>
-          <article className="member" tabIndex={0} aria-label={`${m.name}, ${m.title}${m.designation ? `, ${m.designation}` : ''}${m.batch ? `, batch ${m.batch}` : ''}`}>
-            <div className="member__photo">
-              <Media image={m.image} alt={`Portrait of ${m.name}`} seed={m.seed} hue={m.hue} />
-              {!m.image && (
-                <span className="member__initials" aria-hidden="true">
-                  {m.initials ?? getInitials(m.name)}
-                </span>
-              )}
+      {members.map((m) => {
+        const hue = m.hue ?? getHueFromName(m.name)
+        const seed = m.seed ?? getNameSeed(m.name)
+        return (
+          <li key={m.id}>
+            <article className="member" tabIndex={0} aria-label={`${m.name}, ${m.title}${m.designation ? `, ${m.designation}` : ''}${m.batch ? `, batch ${m.batch}` : ''}`}>
+              <div className="member__photo">
+                <Media image={m.image} alt={`Portrait of ${m.name}`} seed={seed} hue={hue} />
+                {!m.image && (
+                  <span className="member__initials" aria-hidden="true">
+                    {m.initials ?? getInitials(m.name)}
+                  </span>
+                )}
               <div className="member__info">
                 <p className="member__title">{m.title}</p>
                 <h2 className="member__name">{m.name}</h2>
@@ -54,7 +58,8 @@ export function TeamGrid({ members }: { members: Member[] }) {
             </p>
           </article>
         </li>
-      ))}
+      )
+    })}
     </ul>
   )
 }
