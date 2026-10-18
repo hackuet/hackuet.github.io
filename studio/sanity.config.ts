@@ -6,11 +6,23 @@ import { structure } from './structure'
 
 const SINGLETONS = new Set(['siteSettings', 'homeStory', 'registrationOptions', 'navigation'])
 
+const projectId =
+  process.env.SANITY_STUDIO_PROJECT_ID ||
+  process.env.NEXT_PUBLIC_SANITY_PROJECT_ID ||
+  process.env.SANITY_PROJECT_ID ||
+  'xcn3cj7z'
+
+const dataset =
+  process.env.SANITY_STUDIO_DATASET ||
+  process.env.NEXT_PUBLIC_SANITY_DATASET ||
+  process.env.SANITY_DATASET ||
+  'production'
+
 export default defineConfig({
   name: 'default',
   title: 'HACK KUET',
-  projectId: 'ky8bcwum',
-  dataset: 'production',
+  projectId,
+  dataset,
   plugins: [structureTool({ structure }), visionTool()],
   schema: { types: schemaTypes },
   document: {
