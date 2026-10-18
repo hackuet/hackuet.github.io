@@ -1,12 +1,12 @@
 import type { Member } from '@/data/club'
 import { Media } from './ui'
 
-function initials(name: string) {
-  return name
-    .split(' ')
-    .slice(0, 2)
-    .map((part) => part[0])
-    .join('')
+export function getInitials(name: string): string {
+  const clean = name.replace(/^(Dr\.|Md\.|Mohammad|Engr\.)\s+/i, '').trim()
+  const parts = clean.split(/\s+/).filter(Boolean)
+  if (parts.length === 0) return 'HK'
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase()
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
 }
 
 /** Committee portraits. Hovering or focusing a portrait reveals name, title, department and batch;
@@ -21,7 +21,7 @@ export function TeamGrid({ members }: { members: Member[] }) {
               <Media image={m.image} alt={`Portrait of ${m.name}`} seed={m.seed} hue={m.hue} />
               {!m.image && (
                 <span className="member__initials" aria-hidden="true">
-                  {m.initials ?? initials(m.name)}
+                  {m.initials ?? getInitials(m.name)}
                 </span>
               )}
               <div className="member__info">
@@ -38,12 +38,6 @@ export function TeamGrid({ members }: { members: Member[] }) {
                     <div>
                       <dt>Dept.</dt>
                       <dd>{m.department}</dd>
-                    </div>
-                  )}
-                  {m.roll && (
-                    <div>
-                      <dt>Roll</dt>
-                      <dd>{m.roll}</dd>
                     </div>
                   )}
                   {m.batch && (

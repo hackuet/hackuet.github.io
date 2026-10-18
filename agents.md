@@ -60,10 +60,14 @@ This file provides architectural context, development conventions, and operation
 ### 4.4. Generative Art & Media Fallbacks
 - The `DieArt` component (`src/components/DieArt.tsx`) renders an SVG silicon die floorplan deterministically generated using Mulberry32 PRNG.
 - When adding entities (members, gallery items, events), always provide a numeric `seed` and a `hue` (`'navy' | 'blue' | 'cyan' | 'sky'`) to guarantee that `Media` fallback artwork displays properly in the absence of a photo.
-- **Custom Initials Badge**: Member cards without bitmap images render the procedural chip floorplan with an initials badge (`initials(name)` or explicit `m.initials`, e.g. `'TZ'` for Workshop Manager Tasmir Hossain Zihad).
+- **Auto-Generated Initials Badge**: Member cards without bitmap images render the procedural chip floorplan with an initials badge auto-computed via `getInitials(name)` (e.g. stripping honorifics and taking first and last name initials: `'Tasmir Hossain Zihad'` $\rightarrow$ `'TZ'`, `'Arnob Dam'` $\rightarrow$ `'AD'`).
+- **Privacy Protection (Strict Requirement)**: Never commit student roll numbers, personal phone numbers, or private emails to GitHub or the public website. Public member profiles only display public titles, departments, and academic batches.
 
-### 4.5. Sanity.io Media & Asset Pipeline
-- **Sanity Content Lake (`xcn3cj7z` / `production`)**: All member portraits, photography, and large backdrops must be hosted on Sanity.io CDN (`https://cdn.sanity.io/images/xcn3cj7z/production/...`), **not** committed as static binary files into `public/`.
+### 4.5. Sanity.io Executive Panel & Media Pipeline
+- **Sanity Content Lake (`xcn3cj7z` / `production`)**:
+  - Executive panel members are stored as `teamMember` documents in Sanity Content Lake and dynamically fetched via GROQ (`src/lib/sanity-team.ts`).
+  - Historical Panels: Schema and queries support a `panel` tag (`panel: '2026'`) so previous panels (e.g. 2025, 2024 alumni) can be archived and supported in the future.
+  - Resilient Fallback: If Sanity is unreachable or network drops during build, the loader gracefully falls back to the static `team` array in `src/data/club.ts`.
 - **Deduplicated Asset Mapping (`src/data/sanity-assets.json`)**:
   - The repository maintains `src/data/sanity-assets.json` as the canonical registry of uploaded assets, indexing each file's SHA-1 hash, asset ID, and CDN URL.
   - Before uploading any image, the uploader script checks this registry to skip existing assets and prevent redundant network requests and duplicate assets.
