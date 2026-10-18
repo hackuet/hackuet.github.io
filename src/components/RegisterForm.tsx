@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react'
 import Link from 'next/link'
-import { batches, club, departments, tracks } from '@/data/club'
+import type { RegistrationOptions, SiteSettings } from '@/lib/types'
 import {
   clearPass,
   emptyRegistration,
@@ -60,7 +60,7 @@ function Field({
   )
 }
 
-export function RegisterForm() {
+export function RegisterForm({ club, options }: { club: SiteSettings; options: RegistrationOptions }) {
   const [status, setStatus] = useState<Status>('loading')
   const [values, setValues] = useState<Registration>(emptyRegistration)
   const [errors, setErrors] = useState<Errors>({})
@@ -71,10 +71,10 @@ export function RegisterForm() {
   const justIssued = useRef(false)
 
   useEffect(() => {
-    const saved = loadPass()
+    const saved = loadPass(options)
     setPass(saved)
     setStatus(saved ? 'issued' : 'form')
-  }, [])
+  }, [options])
 
   useEffect(() => {
     if (status === 'issued' && justIssued.current) {
@@ -87,13 +87,13 @@ export function RegisterForm() {
     const next = { ...values, [field]: value }
     setValues(next)
     // Once a field has shown an error, re-check it on every keystroke so the message clears promptly.
-    if (errors[field]) setErrors((e) => ({ ...e, [field]: validateField(field, next) }))
+    if (errors[field]) setErrors((e) => ({ ...e, [field]: validateField(field, next, options) }))
   }
 
   const check = (field: keyof Registration) => {
     setErrors((e) => {
-      const next = { ...e, [field]: validateField(field, values) }
-      if (field === 'batch' && values.roll) next.roll = validateField('roll', values)
+      const next = { ...e, [field]: validateField(field, values, options) }
+      if (field === 'batch' && values.roll) next.roll = validateField('roll', values, options)
       return next
     })
   }
@@ -115,11 +115,11 @@ export function RegisterForm() {
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault()
     if (status === 'submitting') return
-    const found = validate(values)
+    const found = validate(values, options)
     setErrors(found)
     const first = (Object.keys(values) as (keyof Registration)[]).find((f) => found[f])
     if (first) {
-      const target = first === 'track' ? 'reg-track-fpga' : `reg-${first}`
+      const target = first === 'track' ? `reg-track-${options.tracks[0]?.id ?? ''}` : `reg-${first}`
       document.getElementById(target)?.focus()
       return
     }
@@ -194,7 +194,7 @@ export function RegisterForm() {
           </div>
         </div>
         <aside className="register__pass" aria-label="Your member pass">
-          <MemberPass data={pass} issued />
+          <MemberPass data={pass} issued tracks={options.tracks} short={club.short} />
         </aside>
 
         {confirming && <Modal
@@ -255,7 +255,7 @@ export function RegisterForm() {
               onChange={(e) => set('department', e.target.value)}
             >
               <option value="">Select</option>
-              {departments.map((d) => (
+              {options.departments.map((d) => (
                 <option key={d}>{d}</option>
               ))}
             </select>
@@ -263,7 +263,7 @@ export function RegisterForm() {
           <Field id="reg-batch" label="Batch" error={errors.batch}>
             <select {...props('batch')} className="input" value={values.batch} onChange={(e) => set('batch', e.target.value)}>
               <option value="">Select</option>
-              {batches.map((b) => (
+              {options.batches.map((b) => (
                 <option key={b}>{b}</option>
               ))}
             </select>
@@ -309,7 +309,7 @@ export function RegisterForm() {
         <fieldset className={`field choice${errors.track ? ' has-error' : ''}`} aria-describedby="reg-track-msg">
           <legend>Which track do you want to start with?</legend>
           <div className="choice__grid">
-            {tracks.map((t) => (
+            {options.tracks.map((t) => (
               <label key={t.id} className="choice__item">
                 <input
                   type="radio"
@@ -368,7 +368,7 @@ export function RegisterForm() {
       </form>
 
       <aside className="register__pass" aria-label="Member pass preview">
-        <MemberPass data={values} issued={false} />
+        <MemberPass data={values} issued={false} tracks={options.tracks} short={club.short} />
         <p className="field__hint">Your pass fills in as you type.</p>
       </aside>
     </div>

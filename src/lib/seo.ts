@@ -1,12 +1,24 @@
 import type { Metadata } from 'next'
-import { club } from '@/data/club'
 import { siteUrl } from './site'
+import type { SiteSettings } from './types'
 
 export const orgId = `${siteUrl}/#organization`
 export const websiteId = `${siteUrl}/#website`
 
+type MetaClub = Pick<SiteSettings, 'short' | 'name'>
+
 /** Per-route metadata: unique title and description, canonical URL, and matching social cards. */
-export function pageMeta({ title, description, path }: { title: string; description: string; path: string }): Metadata {
+export function pageMeta({
+  title,
+  description,
+  path,
+  club,
+}: {
+  title: string
+  description: string
+  path: string
+  club: MetaClub
+}): Metadata {
   const url = path === '/' ? '/' : `${path}/`
   const fullTitle = path === '/' ? title : `${title} | ${club.short}, KUET`
   const ogImageUrl = `${siteUrl}/opengraph-image.jpg`
@@ -51,47 +63,51 @@ export function breadcrumbLd(path: string, label: string) {
   }
 }
 
-export const organizationLd = {
-  '@context': 'https://schema.org',
-  '@type': ['Organization', 'EducationalOrganization'],
-  '@id': orgId,
-  name: club.name,
-  alternateName: [club.short, 'HACK KUET'],
-  url: `${siteUrl}/`,
-  logo: { '@type': 'ImageObject', url: `${siteUrl}/logo.png`, width: 383, height: 286 },
-  image: `${siteUrl}/opengraph-image.jpg`,
-  description: club.description,
-  slogan: club.tagline,
-  foundingDate: String(club.founded),
-  email: club.email,
-  sameAs: ['https://github.com/hackuet'],
-  knowsAbout: ['FPGA', 'Verilog', 'Digital design', 'GPU computing', 'RISC-V', 'Computer architecture', 'Embedded systems'],
-  parentOrganization: {
-    '@type': 'CollegeOrUniversity',
-    name: club.university,
-    alternateName: 'KUET',
-    url: 'https://www.kuet.ac.bd/',
-  },
-  address: {
-    '@type': 'PostalAddress',
-    streetAddress: club.room,
-    addressLocality: 'Khulna',
-    postalCode: '9203',
-    addressCountry: 'BD',
-  },
-  contactPoint: { '@type': 'ContactPoint', contactType: 'membership enquiries', email: club.email, availableLanguage: ['en', 'bn'] },
+export function organizationLd(club: SiteSettings) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': ['Organization', 'EducationalOrganization'],
+    '@id': orgId,
+    name: club.name,
+    alternateName: [club.short, 'HACK KUET'],
+    url: `${siteUrl}/`,
+    logo: { '@type': 'ImageObject', url: `${siteUrl}/logo.png`, width: 383, height: 286 },
+    image: `${siteUrl}/opengraph-image.jpg`,
+    description: club.description,
+    slogan: club.tagline,
+    ...(club.founded ? { foundingDate: String(club.founded) } : {}),
+    email: club.email,
+    sameAs: ['https://github.com/hackuet'],
+    knowsAbout: club.keywords,
+    parentOrganization: {
+      '@type': 'CollegeOrUniversity',
+      name: club.university,
+      alternateName: 'KUET',
+      url: 'https://www.kuet.ac.bd/',
+    },
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: club.room,
+      addressLocality: 'Khulna',
+      postalCode: '9203',
+      addressCountry: 'BD',
+    },
+    contactPoint: { '@type': 'ContactPoint', contactType: 'membership enquiries', email: club.email, availableLanguage: ['en', 'bn'] },
+  }
 }
 
-export const websiteLd = {
-  '@context': 'https://schema.org',
-  '@type': 'WebSite',
-  '@id': websiteId,
-  url: `${siteUrl}/`,
-  name: club.name,
-  alternateName: club.short,
-  description: club.description,
-  inLanguage: 'en',
-  publisher: { '@id': orgId },
+export function websiteLd(club: SiteSettings) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    '@id': websiteId,
+    url: `${siteUrl}/`,
+    name: club.name,
+    alternateName: club.short,
+    description: club.description,
+    inLanguage: 'en',
+    publisher: { '@id': orgId },
+  }
 }
 
 export function JsonLdScript(data: object) {

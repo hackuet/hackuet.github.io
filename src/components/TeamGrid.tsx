@@ -1,4 +1,4 @@
-import type { Member } from '@/data/club'
+import type { Member } from '@/lib/types'
 import { getHueFromName, getNameSeed } from './DieArt'
 import { Media } from './ui'
 

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Reveal } from '@/components/motion'
 import { EmptyState } from '@/components/ui'
-import { club, type ClubEvent } from '@/data/club'
+import type { ClubEvent } from '@/lib/types'
 
 function EventList({ items }: { items: ClubEvent[] }) {
   return (
@@ -27,10 +27,12 @@ export function EventsView({
   initialUpcoming,
   initialPast,
   allEvents,
+  meets,
 }: {
   initialUpcoming: ClubEvent[]
   initialPast: ClubEvent[]
   allEvents: ClubEvent[]
+  meets: string
 }) {
   const [upcoming, setUpcoming] = useState<ClubEvent[]>(initialUpcoming)
   const [past, setPast] = useState<ClubEvent[]>(initialPast)
@@ -53,7 +55,7 @@ export function EventsView({
         ) : (
           <EmptyState
             title="Nothing on the calendar yet"
-            body={`Weekly sessions still run ${club.meets}. New events are announced to members first.`}
+            body={`Weekly sessions still run ${meets}. New events are announced to members first.`}
             action={
               <Link href="/register" className="btn btn--primary btn--sm">
                 Register to hear first

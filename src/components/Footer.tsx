@@ -1,9 +1,9 @@
 import Link from 'next/link'
-import { club, nav } from '@/data/club'
+import type { Section, SiteSettings } from '@/lib/types'
 import { HomeLink } from './HomeLink'
 import { Mark } from './ui'
 
-export function Footer() {
+export function Footer({ club, nav }: { club: SiteSettings; nav: Section[] }) {
   return (
     <footer className="footer">
       <div className="wrap footer__in">

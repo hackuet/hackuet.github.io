@@ -953,3 +953,53 @@
     grid-template-columns: 200px minmax(0, 1fr);
   }
 }
+
+/* ---- Projects ---- */
+
+.projects {
+  display: grid;
+  gap: var(--s-7) var(--s-6);
+}
+
+@media (min-width: 760px) {
+  .projects {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.project__frame {
+  aspect-ratio: 16 / 10;
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  background: var(--bg-tint);
+}
+
+.project h2 {
+  margin-top: var(--s-4);
+}
+
+.project p {
+  margin-top: var(--s-2);
+  color: var(--ink-2);
+}
+
+.project__more {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s-4);
+  margin-top: var(--s-4);
+}
+
+.project__more .media {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: var(--r-sm);
+}
+
+.project__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+  margin-top: var(--s-4);
+}
