@@ -15,6 +15,8 @@ export async function generateMetadata(): Promise<Metadata> {
   })
 }
 
+// Note: We will later support keeping and archiving previous executive panels (e.g. 2025, 2024 alumni panels).
+// Currently only the active 2026 panel is loaded and displayed.
 export default async function ExecutiveBoardPage() {
   const [club, team] = await Promise.all([getSiteSettings(), getTeam()])
 
@@ -28,6 +30,7 @@ export default async function ExecutiveBoardPage() {
           name: m.name,
           jobTitle: m.title,
           affiliation: { '@type': 'CollegeOrUniversity', name: club.university },
+          ...(m.image ? { image: m.image } : {}),
         })),
       }
     : undefined

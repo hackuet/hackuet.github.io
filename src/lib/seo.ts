@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
-import type { SiteSettings } from './types'
 import { siteUrl } from './site'
+import type { SiteSettings } from './types'
 
 export const orgId = `${siteUrl}/#organization`
 export const websiteId = `${siteUrl}/#website`
@@ -21,6 +21,8 @@ export function pageMeta({
 }): Metadata {
   const url = path === '/' ? '/' : `${path}/`
   const fullTitle = path === '/' ? title : `${title} | ${club.short}, KUET`
+  const ogImageUrl = `${siteUrl}/opengraph-image.jpg`
+
   return {
     title: path === '/' ? { absolute: title } : title,
     description,
@@ -32,8 +34,21 @@ export function pageMeta({
       title: fullTitle,
       description,
       url,
+      images: [
+        {
+          url: ogImageUrl,
+          width: 1200,
+          height: 630,
+          alt: `${club.name} (${club.short})`,
+        },
+      ],
     },
-    twitter: { card: 'summary', title: fullTitle, description },
+    twitter: {
+      card: 'summary_large_image',
+      title: fullTitle,
+      description,
+      images: [ogImageUrl],
+    },
   }
 }
 
@@ -62,6 +77,7 @@ export function organizationLd(club: SiteSettings) {
     slogan: club.tagline,
     ...(club.founded ? { foundingDate: String(club.founded) } : {}),
     email: club.email,
+    sameAs: ['https://github.com/hackuet'],
     knowsAbout: club.keywords,
     parentOrganization: {
       '@type': 'CollegeOrUniversity',

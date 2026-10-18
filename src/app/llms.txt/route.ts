@@ -66,9 +66,10 @@ ${lines(achievements.map((a) => `- ${a.year}: ${a.title}. ${a.result}, ${a.event
 
 ${lines(events.map((e) => `- ${e.when}: ${e.title}, ${e.place}. ${e.body}`), 'None announced yet.')}
 
-## Executive Board
-
-${lines(team.map((m) => `- ${m.title}: ${m.name} (${m.department}, batch ${m.batch})`), 'To be announced.')}
+${lines(
+  team.map((m) => `- ${m.title}: ${m.name}${m.designation ? ` (${m.designation})` : ''}${m.batch ? ` (batch ${m.batch})` : ''}`),
+  'To be announced.'
+)}
 
 ## Pages
 

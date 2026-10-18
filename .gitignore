@@ -1,9 +1,12 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
 # dependencies
 node_modules
 /.pnp
 .pnp.js
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
 
 # testing
 /coverage
@@ -31,9 +34,11 @@ yarn-error.log*
 # vercel
 .vercel
 
-# typescript
-*.tsbuildinfo
-next-env.d.ts
+# raw image staging & isolated local studio
+assets/
+assets/pics/
+assets/raw-team/
+studio-hackuet/
 
 # sanity studio
 studio/dist
@@ -41,3 +46,7 @@ studio/.sanity
 
 # superpowers execution scratch
 .superpowers/
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts

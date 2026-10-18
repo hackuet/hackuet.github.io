@@ -46,12 +46,14 @@ export type Member = {
   id: string
   name: string
   title: string
-  department: string
-  batch: string
-  seed: number
-  hue: Hue
+  department?: string
+  designation?: string
+  batch?: string
+  seed?: number
+  hue?: Hue
   /** Sanity CDN URL; artwork is shown until one is set. */
   image?: string
+  initials?: string
 }
 
 export type ClubEvent = { id: string; date: string; when: string; title: string; place: string; body: string }

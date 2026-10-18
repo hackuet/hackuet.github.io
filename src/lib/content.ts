@@ -17,17 +17,16 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     short, name, university, tagline, description, founded, email, room, address, mapUrl, meets, intake, intakeCloses, keywords
   }`)
   if (!doc) required('the "Site settings" document')
-  // The keywords field is optional in the Studio; keep the type promise.
   return { ...doc, keywords: doc.keywords ?? [] }
 }
 
 type SlideDoc = Omit<Slide, 'id' | 'image'> & { _id: string; image?: SanityImage }
 
 export async function getSlides(): Promise<Slide[]> {
-  const docs = await client.fetch<SlideDoc[]>(`*[_type == "heroSlide"] | order(orderRank asc) {
+  const docs = (await client.fetch<SlideDoc[]>(`*[_type == "heroSlide"] | order(orderRank asc) {
     _id, label, eyebrow, title, body, figure, seed, hue, image
-  }`)
-  return docs.map(({ _id, image, ...rest }) => ({ ...rest, id: _id, image: imageUrl(image, 1920) }))
+  }`)) as SlideDoc[]
+  return docs.map(({ _id, image, ...rest }: SlideDoc) => ({ ...rest, id: _id, image: imageUrl(image, 1920) }))
 }
 
 type StoryDoc = {
@@ -56,27 +55,30 @@ export async function getStory(): Promise<Story> {
 
 type MemberDoc = Omit<Member, 'id' | 'image'> & { _id: string; image?: SanityImage }
 
-export async function getTeam(): Promise<Member[]> {
-  const docs = await client.fetch<MemberDoc[]>(`*[_type == "teamMember"] | order(orderRank asc) {
-    _id, name, title, department, batch, seed, hue, image
-  }`)
-  return docs.map(({ _id, image, ...rest }) => ({ ...rest, id: _id, image: imageUrl(image, 800) }))
+// Note: We will later support keeping and archiving previous executive panels (e.g. 2025, 2024 alumni panels).
+// Currently only the active 2026 panel is loaded and displayed.
+export async function getTeam(panel = '2026'): Promise<Member[]> {
+  const docs = (await client.fetch<MemberDoc[]>(`*[_type == "teamMember" && (!defined(panel) || panel == "${panel}")] | order(orderRank asc, _createdAt asc) {
+    _id, name, title, department, designation, batch, seed, hue, image
+  }`)) as MemberDoc[]
+  return docs.map(({ _id, image, ...rest }: MemberDoc) => ({ ...rest, id: _id, image: imageUrl(image, 800) }))
 }
 
 export async function getEvents(): Promise<ClubEvent[]> {
-  const docs = await client.fetch<(Omit<ClubEvent, 'id'> & { _id: string })[]>(`*[_type == "event"] {
+  type EventDoc = Omit<ClubEvent, 'id'> & { _id: string }
+  const docs = (await client.fetch<EventDoc[]>(`*[_type == "event"] {
     _id, date, when, title, place, body
-  }`)
-  return docs.map(({ _id, ...rest }) => ({ ...rest, id: _id }))
+  }`)) as EventDoc[]
+  return docs.map(({ _id, ...rest }: EventDoc) => ({ ...rest, id: _id }))
 }
 
 type PhotoDoc = Omit<Photo, 'id' | 'image'> & { _id: string; image?: SanityImage }
 
 export async function getGallery(): Promise<Photo[]> {
-  const docs = await client.fetch<PhotoDoc[]>(`*[_type == "galleryPhoto"] | order(orderRank asc) {
+  const docs = (await client.fetch<PhotoDoc[]>(`*[_type == "galleryPhoto"] | order(orderRank asc) {
     _id, title, date, category, seed, hue, image
-  }`)
-  return docs.map(({ _id, image, ...rest }) => ({ ...rest, id: _id, image: imageUrl(image, 1600) }))
+  }`)) as PhotoDoc[]
+  return docs.map(({ _id, image, ...rest }: PhotoDoc) => ({ ...rest, id: _id, image: imageUrl(image, 1600) }))
 }
 
 type ProjectDoc = {
@@ -90,25 +92,26 @@ type ProjectDoc = {
 }
 
 export async function getProjects(): Promise<Project[]> {
-  const docs = await client.fetch<ProjectDoc[]>(`*[_type == "project"] | order(orderRank asc) {
+  const docs = (await client.fetch<ProjectDoc[]>(`*[_type == "project"] | order(orderRank asc) {
     _id, title, body, seed, hue, images[]{ asset }, links[]{ label, url }
-  }`)
-  return docs.map((doc) => ({
+  }`)) as ProjectDoc[]
+  return docs.map((doc: ProjectDoc) => ({
     id: doc._id,
     title: doc.title,
     body: doc.body,
     seed: doc.seed,
     hue: doc.hue,
-    images: (doc.images ?? []).map((image) => imageUrl(image, 1600)).filter((url): url is string => Boolean(url)),
+    images: (doc.images ?? []).map((image: SanityImage) => imageUrl(image, 1600)).filter((url): url is string => Boolean(url)),
     links: doc.links ?? [],
   }))
 }
 
 export async function getAchievements(): Promise<Achievement[]> {
-  const docs = await client.fetch<(Omit<Achievement, 'id'> & { _id: string })[]>(`*[_type == "achievement"] | order(orderRank asc) {
+  type AchDoc = Omit<Achievement, 'id'> & { _id: string }
+  const docs = (await client.fetch<AchDoc[]>(`*[_type == "achievement"] | order(orderRank asc) {
     _id, year, title, event, result
-  }`)
-  return docs.map(({ _id, ...rest }) => ({ ...rest, id: _id }))
+  }`)) as AchDoc[]
+  return docs.map(({ _id, ...rest }: AchDoc) => ({ ...rest, id: _id }))
 }
 
 export async function getRegistrationOptions(): Promise<RegistrationOptions> {
