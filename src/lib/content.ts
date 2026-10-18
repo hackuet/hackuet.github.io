@@ -53,15 +53,98 @@ export async function getStory(): Promise<Story> {
   }
 }
 
-type MemberDoc = Omit<Member, 'id' | 'image'> & { _id: string; image?: SanityImage }
+type MemberDoc = Omit<Member, 'id' | 'image'> & {
+  _id: string
+  image?: SanityImage
+  orderRank?: string
+  _createdAt?: string
+}
+
+// Canonical post order hierarchy matching the executive committee constitution.
+// Guarantees stable executive panel ordering regardless of Sanity string lexorank encoding variations.
+const TITLE_HIERARCHY: Record<string, number> = {
+  'Moderator': 1,
+  'Advisor': 2,
+  'Co-Moderator': 3,
+  'President': 4,
+  'Vice President': 5,
+  'General Secretary': 6,
+  'Assistant General Secretary': 7,
+  'Organizing Secretary': 8,
+  'Assistant Organizing Secretary': 9,
+  'Treasurer': 10,
+  'Assistant Treasurer': 11,
+  'Publication Secretary': 12,
+  'Assistant Publication Secretary': 13,
+  'Workshop Manager': 14,
+  'Assistant Workshop Manager': 15,
+  'Editorial Manager': 16,
+  'Assistant Editorial Manager': 17,
+  'Batch Representative (2K22)': 18,
+  'Batch Representative (2K23)': 19,
+  'Batch Representative (2K24)': 20,
+  'Performance Analyzer': 21,
+  'Senior Executive': 22,
+}
+
+function parseOrderRank(rank?: string): number {
+  if (!rank) return 999999
+  // Supports Lexorank patterns like "10|000011:" where second group is the sequential sequence
+  const match = rank.match(/(\d+)\|(\d+)/)
+  if (match) return parseInt(match[2], 10)
+  const num = parseInt(rank, 10)
+  return isNaN(num) ? 999999 : num
+}
+
+// Asset hashes of black silhouette placeholders that must NOT be rendered as portrait photos.
+// Instead, procedural silicon die SVGs with auto-generated initials and name-hash hues are rendered.
+const SILHOUETTE_ASSET_HASHES = new Set([
+  'fb00ed923cc288c35ad8177742095554797533cc',
+  'e5ece42786fa110f30ad8ab26f1371bc24da9f0d',
+  '4ba0cd2380878013dfd3c0a697ac9642893ec91c',
+])
+
+const MEMBERS_WITHOUT_PHOTO = new Set([
+  'Tasmir Hossain Zihad',
+  'Bandhon Kumar Sutrodhar',
+  'Arnob Dam',
+  'Anika Fairooz Asad',
+  'Nusrat Zahan Maria',
+  'Ayesha Yesmin Moumita',
+  'Fariha Tabassum',
+  'Mirza Samia Beg',
+  'Nashita Binte Hamid',
+])
 
 // Note: We will later support keeping and archiving previous executive panels (e.g. 2025, 2024 alumni panels).
 // Currently only the active 2026 panel is loaded and displayed.
 export async function getTeam(panel = '2026'): Promise<Member[]> {
-  const docs = (await client.fetch<MemberDoc[]>(`*[_type == "teamMember" && (!defined(panel) || panel == "${panel}")] | order(orderRank asc, _createdAt asc) {
-    _id, name, title, department, designation, batch, seed, hue, image
+  const docs = (await client.fetch<MemberDoc[]>(`*[_type == "teamMember" && (!defined(panel) || panel == "${panel}")] {
+    _id, name, title, department, designation, batch, seed, hue, image, orderRank, _createdAt
   }`)) as MemberDoc[]
-  return docs.map(({ _id, image, ...rest }: MemberDoc) => ({ ...rest, id: _id, image: imageUrl(image, 800) }))
+
+  // Sort deterministically by numeric rank, canonical title hierarchy, and creation time
+  docs.sort((a, b) => {
+    const rankA = parseOrderRank(a.orderRank)
+    const rankB = parseOrderRank(b.orderRank)
+    if (rankA !== rankB) return rankA - rankB
+
+    const titleA = TITLE_HIERARCHY[a.title] ?? 999
+    const titleB = TITLE_HIERARCHY[b.title] ?? 999
+    if (titleA !== titleB) return titleA - titleB
+
+    return (a._createdAt || '').localeCompare(b._createdAt || '')
+  })
+
+  return docs.map(({ _id, image, orderRank, _createdAt, ...rest }: MemberDoc) => {
+    const ref = image?.asset?._ref ?? ''
+    const isSilhouette =
+      MEMBERS_WITHOUT_PHOTO.has(rest.name) ||
+      Array.from(SILHOUETTE_ASSET_HASHES).some((hash) => ref.includes(hash))
+
+    const resolvedImage = isSilhouette ? undefined : imageUrl(image, 800)
+    return { ...rest, id: _id, image: resolvedImage }
+  })
 }
 
 export async function getEvents(): Promise<ClubEvent[]> {

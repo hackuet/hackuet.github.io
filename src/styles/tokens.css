@@ -79,7 +79,8 @@
   /* Layout & motion */
   --wrap: 1180px;
   --gutter: clamp(16px, 4vw, 40px);
-  --header-h: 64px;
+  --banner-h: 36px;
+  --header-h: calc(64px + var(--banner-h));
   --section-y: clamp(64px, 9vw, 120px);
   --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
   --t-fast: 140ms;

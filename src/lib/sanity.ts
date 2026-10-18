@@ -16,10 +16,12 @@ if (!projectId || !dataset) {
 export const client = createClient({
   projectId,
   dataset,
-  apiVersion: '2026-10-01',
+  apiVersion: '2024-10-01',
   // Build-time only: never read through the CDN, so a webhook-triggered rebuild
   // always sees the publish it was triggered by.
   useCdn: false,
+  maxRetries: 3,
+  timeout: 30000,
 })
 
 const builder = createImageUrlBuilder(client)
