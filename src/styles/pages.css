@@ -782,7 +782,7 @@
   aspect-ratio: 4 / 5;
   overflow: hidden;
   border-radius: var(--r-sm);
-  background: #0f172a url('/team-backdrop.webp') center / cover no-repeat;
+  background: #0f172a url('https://cdn.sanity.io/images/xcn3cj7z/production/836182f277d26c10e484fc4c14f0607b61fe6a87-800x800.webp') center / cover no-repeat;
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 

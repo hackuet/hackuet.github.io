@@ -21,7 +21,7 @@ export function TeamGrid({ members }: { members: Member[] }) {
               <Media image={m.image} alt={`Portrait of ${m.name}`} seed={m.seed} hue={m.hue} />
               {!m.image && (
                 <span className="member__initials" aria-hidden="true">
-                  {initials(m.name)}
+                  {m.initials ?? initials(m.name)}
                 </span>
               )}
               <div className="member__info">
