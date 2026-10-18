@@ -15,11 +15,6 @@ Live Site: [https://hackuet.github.io](https://hackuet.github.io)
 
 HACK is the student hardware engineering club at KUET dedicated to FPGAs, digital logic, GPU kernel acceleration, computer architecture, and embedded systems. Members learn Verilog/SystemVerilog, synthesize custom hardware circuits on development boards, build RISC-V cores, and compete in national design competitions.
 
-- **University:** Khulna University of Engineering & Technology (KUET), Bangladesh
-- **Lab Location:** Digital Systems Lab, Room 304, EEE Building, KUET
-- **Weekly Sessions:** Thursdays, 5:00 PM
-- **Contact:** [hack@kuet.ac.bd](mailto:hack@kuet.ac.bd)
-
 ---
 
 ## 🌟 Key Features

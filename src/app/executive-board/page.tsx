@@ -26,6 +26,7 @@ export default async function ExecutiveBoardPage() {
       name: m.name,
       jobTitle: m.title,
       affiliation: { '@type': 'CollegeOrUniversity', name: club.university },
+      ...(m.image ? { image: m.image } : {}),
     })),
   }
 
