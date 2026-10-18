@@ -60,19 +60,57 @@ This file provides architectural context, development conventions, and operation
 ### 4.4. Generative Art & Media Fallbacks
 - The `DieArt` component (`src/components/DieArt.tsx`) renders an SVG silicon die floorplan deterministically generated using Mulberry32 PRNG.
 - When adding entities (members, gallery items, events), always provide a numeric `seed` and a `hue` (`'navy' | 'blue' | 'cyan' | 'sky'`) to guarantee that `Media` fallback artwork displays properly in the absence of a photo.
+- **Custom Initials Badge**: Member cards without bitmap images render the procedural chip floorplan with an initials badge (`initials(name)` or explicit `m.initials`, e.g. `'TZ'` for Workshop Manager Tasmir Hossain Zihad).
 
-### 4.5. Quality Assurance & Verification Commands
-Before submitting or finalizing any code changes, agents must execute and verify:
+### 4.5. Sanity.io Media & Asset Pipeline
+- **Sanity Content Lake (`xcn3cj7z` / `production`)**: All member portraits, photography, and large backdrops must be hosted on Sanity.io CDN (`https://cdn.sanity.io/images/xcn3cj7z/production/...`), **not** committed as static binary files into `public/`.
+- **Deduplicated Asset Mapping (`src/data/sanity-assets.json`)**:
+  - The repository maintains `src/data/sanity-assets.json` as the canonical registry of uploaded assets, indexing each file's SHA-1 hash, asset ID, and CDN URL.
+  - Before uploading any image, the uploader script checks this registry to skip existing assets and prevent redundant network requests and duplicate assets.
+- **Asset Upload Tooling**:
+  - Script: [`scripts/upload_to_sanity.py`](file:///home/user/.gemini/antigravity/scratch/hackuet.github.io/scripts/upload_to_sanity.py)
+  - Usage:
+    ```bash
+    # Single image (checks duplicates first)
+    python3 scripts/upload_to_sanity.py assets/raw-team/new-member.webp
 
-1. **Typecheck:**
+    # Batch directory upload (multithreaded, skips existing)
+    python3 scripts/upload_to_sanity.py assets/raw-team/
+
+    # Force re-upload (bypasses duplicate check)
+    python3 scripts/upload_to_sanity.py assets/pics/banner.webp --force
+    ```
+- **Git Hygiene for Assets**:
+  - Raw images are placed in `assets/raw-team/` or `assets/pics/`.
+  - The `assets/` directory is strictly gitignored in `.gitignore`. **Never commit binary photos into git**.
+- **Sanity Studio Isolation**:
+  - The Sanity Studio (`studio-hackuet/`) is kept as an independent sibling folder outside the web repository (and listed in `.gitignore`) so studio packages and credentials are never bundled into the static GitHub Pages deployment.
+
+### 4.6. Pre-Push Testing & Quality Gates
+Before pushing any commit or submitting a pull request, agents must strictly pass all 4 verification gates:
+
+1. **Gate 1 — Typecheck:**
    ```bash
    npm run typecheck
    ```
-2. **Static Export Build:**
+   Must exit with code 0 without any type errors or implicit `any`.
+
+2. **Gate 2 — Production Static Export Build:**
    ```bash
    npm run build
    ```
-   Both commands must exit with code 0 without unhandled warnings or missing type definitions.
+   Must compile cleanly, generate all static routes (`14/14`), and complete `scripts/postexport.mjs` without errors.
+
+3. **Gate 3 — Local Runtime & Visual Verification:**
+   - Run local dev server (`npm run dev`) or test exported pages.
+   - Verify page renders correctly in the browser or via automated browser tooling (Playwright).
+   - Ensure external CDN assets load with HTTP 200 and SVG procedural fallbacks render as expected.
+
+4. **Gate 4 — Binary & Secret Audit:**
+   ```bash
+   git status
+   ```
+   Ensure no image binaries (`.webp`, `.jpg`, `.png`), secret credentials (`.env`, `.env.local`), or build output folders (`.next/`, `out/`, `studio-hackuet/`) are staged.
 
 ---
 
