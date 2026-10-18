@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
 # dependencies
 /node_modules
 /.pnp
@@ -19,6 +16,7 @@
 # misc
 .DS_Store
 *.pem
+AGENTS.md
 
 # debug
 npm-debug.log*
@@ -29,16 +27,14 @@ yarn-error.log*
 .env*.local
 .env
 
-# vercel
-.vercel
+# sanity studio folder (isolated from static site)
+studio-hackuet/
+
+# raw / staging images for Sanity asset uploads
+assets/
+assets/pics/
+assets/raw-team/
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-=======
-node_modules
-.next
-out
-next-env.d.ts
-*.tsbuildinfo
->>>>>>> 9f06d6a (hackuet/hackuet.github.io)

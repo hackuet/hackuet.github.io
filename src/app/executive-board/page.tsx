@@ -1,6 +1,7 @@
 import { Page } from '@/components/Page'
 import { TeamGrid } from '@/components/TeamGrid'
-import { club, team } from '@/data/club'
+import { club } from '@/data/club'
+import { getExecutiveBoard } from '@/lib/sanity-team'
 import { orgId, pageMeta } from '@/lib/seo'
 
 export const metadata = pageMeta({
@@ -9,19 +10,24 @@ export const metadata = pageMeta({
   path: '/executive-board',
 })
 
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'Organization',
-  '@id': orgId,
-  member: team.map((m) => ({
-    '@type': 'Person',
-    name: m.name,
-    jobTitle: m.title,
-    affiliation: { '@type': 'CollegeOrUniversity', name: club.university },
-  })),
-}
+// Note: We will later support keeping and archiving previous executive panels (e.g. 2025, 2024 alumni panels).
+// Currently only the active 2026 panel is loaded and displayed.
+export default async function ExecutiveBoardPage() {
+  const members = await getExecutiveBoard('2026')
 
-export default function ExecutiveBoardPage() {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    '@id': orgId,
+    member: members.map((m) => ({
+      '@type': 'Person',
+      name: m.name,
+      jobTitle: m.title,
+      affiliation: { '@type': 'CollegeOrUniversity', name: club.university },
+      ...(m.image ? { image: m.image } : {}),
+    })),
+  }
+
   return (
     <Page
       path="/executive-board"
@@ -29,7 +35,7 @@ export default function ExecutiveBoardPage() {
       lede="This year’s Executive Board. Hover or tap a portrait for name, title, department and batch."
       jsonLd={jsonLd}
     >
-      <TeamGrid members={team} />
+      <TeamGrid members={members} />
     </Page>
   )
 }

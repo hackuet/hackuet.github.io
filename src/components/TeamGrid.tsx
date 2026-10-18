@@ -1,12 +1,13 @@
 import type { Member } from '@/data/club'
+import { getHueFromName, getNameSeed } from './DieArt'
 import { Media } from './ui'
 
-function initials(name: string) {
-  return name
-    .split(' ')
-    .slice(0, 2)
-    .map((part) => part[0])
-    .join('')
+export function getInitials(name: string): string {
+  const clean = name.replace(/^(Dr\.|Md\.|Mohammad|Engr\.)\s+/i, '').trim()
+  const parts = clean.split(/\s+/).filter(Boolean)
+  if (parts.length === 0) return 'HK'
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase()
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
 }
 
 /** Committee portraits. Hovering or focusing a portrait reveals name, title, department and batch;
@@ -14,28 +15,41 @@ function initials(name: string) {
 export function TeamGrid({ members }: { members: Member[] }) {
   return (
     <ul className="team">
-      {members.map((m) => (
-        <li key={m.id}>
-          <article className="member" tabIndex={0} aria-label={`${m.name}, ${m.title}, ${m.department} ${m.batch}`}>
-            <div className="member__photo">
-              <Media image={m.image} alt={`Portrait of ${m.name}`} seed={m.seed} hue={m.hue} />
-              {!m.image && (
-                <span className="member__initials" aria-hidden="true">
-                  {initials(m.name)}
-                </span>
-              )}
+      {members.map((m) => {
+        const hue = m.hue ?? getHueFromName(m.name)
+        const seed = m.seed ?? getNameSeed(m.name)
+        return (
+          <li key={m.id}>
+            <article className="member" tabIndex={0} aria-label={`${m.name}, ${m.title}${m.designation ? `, ${m.designation}` : ''}${m.batch ? `, batch ${m.batch}` : ''}`}>
+              <div className="member__photo">
+                <Media image={m.image} alt={`Portrait of ${m.name}`} seed={seed} hue={hue} />
+                {!m.image && (
+                  <span className="member__initials" aria-hidden="true">
+                    {m.initials ?? getInitials(m.name)}
+                  </span>
+                )}
               <div className="member__info">
                 <p className="member__title">{m.title}</p>
                 <h2 className="member__name">{m.name}</h2>
                 <dl>
-                  <div>
-                    <dt>Dept.</dt>
-                    <dd>{m.department}</dd>
-                  </div>
-                  <div>
-                    <dt>Batch</dt>
-                    <dd>{m.batch}</dd>
-                  </div>
+                  {m.designation && (
+                    <div>
+                      <dt>Designation</dt>
+                      <dd>{m.designation}</dd>
+                    </div>
+                  )}
+                  {m.department && (
+                    <div>
+                      <dt>Dept.</dt>
+                      <dd>{m.department}</dd>
+                    </div>
+                  )}
+                  {m.batch && (
+                    <div>
+                      <dt>Batch</dt>
+                      <dd>{m.batch}</dd>
+                    </div>
+                  )}
                 </dl>
               </div>
             </div>
@@ -44,7 +58,8 @@ export function TeamGrid({ members }: { members: Member[] }) {
             </p>
           </article>
         </li>
-      ))}
+      )
+    })}
     </ul>
   )
 }
