@@ -1,204 +1,91 @@
-# Hardware Acceleration Club of KUET (HACK) — Official Website
+# Hardware Acceleration Club of KUET (HACK)
 
 [![Deploy Next.js to GitHub Pages](https://github.com/hackuet/hackuet.github.io/actions/workflows/deploy.yml/badge.svg)](https://github.com/hackuet/hackuet.github.io/actions/workflows/deploy.yml)
-[![Static Site](https://img.shields.io/badge/Next.js-16%20Static%20Export-black?style=flat&logo=next.js)](https://nextjs.org)
+[![Next.js 16](https://img.shields.io/badge/Next.js-16%20Static%20Export-black?style=flat&logo=next.js)](https://nextjs.org)
+[![React 19](https://img.shields.io/badge/React-19-61dafb?style=flat&logo=react)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-7.0%20Strict-blue?style=flat&logo=typescript)](https://www.typescriptlang.org)
-[![React](https://img.shields.io/badge/React-19-61dafb?style=flat&logo=react)](https://react.dev)
 
 The official website for **HACK** (**Hardware Acceleration Club of KUET**), based at Khulna University of Engineering & Technology (KUET), Bangladesh.
 
-Live Site: [https://hackuet.github.io](https://hackuet.github.io)
+🌐 **Live Site:** [https://hackuet.github.io](https://hackuet.github.io)  
+🎨 **Design System & Visual Spec:** [DESIGN.md](DESIGN.md)
 
 ---
 
-## ⚡ About HACK
-
-HACK is the student hardware engineering club at KUET dedicated to FPGAs, digital logic, GPU kernel acceleration, computer architecture, and embedded systems. Members learn Verilog/SystemVerilog, synthesize custom hardware circuits on development boards, build RISC-V cores, and compete in national design competitions.
-
----
-
-## 🌟 Key Features
-
-- **Generative Die Art (`DieArt.tsx`):**
-  Algorithmic, deterministic silicon chip floorplans generated via seed-based pseudo-random numbers (Mulberry32). Color hues (`navy`, `blue`, `cyan`, `sky`) are automatically derived from member name hashes, providing custom procedural artwork for members without portraits.
-- **Auto-Generated Initials Monograms:**
-  Members without real photos display their algorithmic 2-letter initials badge (e.g. Tasmir Hossain Zihad $\rightarrow$ `"TZ"`, Arnob Dam $\rightarrow$ `"AD"`, Bandhon Kumar Sutrodhar $\rightarrow$ `"BS"`).
-- **Interactive Registration & Pass Generator (`/register`):**
-  Client-side registration form with KUET roll number and department validation. Automatically generates an authentic, downloadable digital membership pass with unique visual die art seeded from the applicant's student roll. Saved in local storage.
-- **Executive Board (`/executive-board`):**
-  Comprehensive roster of club moderators, advisors, executive board members, batch representatives, and manager divisions loaded dynamically from Sanity Content Lake with resilient static fallback.
-- **Event Scheduling (`/events`):**
-  Interactive schedule of upcoming workshops, hardware sprints, and design reviews, complete with past event archives and Schema.org `EducationEvent` JSON-LD markup.
-- **Achievements & Projects (`/achievements`, `/projects`):**
-  Showcase of contest championships, publications, and student-designed hardware accelerators.
-- **Photo Gallery (`/gallery`):**
-  Visual collection of club workshops, build sessions, and contest delegations.
-- **Sanity.io Integration & Media Pipeline:**
-  Portraits and photo assets hosted on the Sanity CDN, managed via Sanity Studio in `studio/`.
-- **Privacy Guaranteed:**
-  Zero student roll numbers, phone numbers, or private emails are committed to GitHub or rendered publicly on member cards.
-- **LLM/Crawler Friendly (`/llms.txt`):**
-  Static Markdown site index specifically formatted for consumption by language models and AI assistants.
-- **Zero-Server Architecture:**
-  100% static HTML/CSS/JS export deployed seamlessly to GitHub Pages with automated prefetch path normalization.
-
----
-
-## 🛠️ Tech Stack & Architecture
-
-- **Framework:** [Next.js](https://nextjs.org/) (App Router, static export `output: 'export'`)
-- **CMS:** [Sanity.io](https://www.sanity.io/) (Content Lake, Studio in `studio/`)
-- **UI Library:** [React 19](https://react.dev/)
-- **Language:** [TypeScript](https://www.typescriptlang.org/) (strict mode)
-- **Styling:** Vanilla CSS with custom design tokens (`tokens.css`, `base.css`, `components.css`, `pages.css`), Bricolage Grotesque, Instrument Sans, and JetBrains Mono typography.
-- **Icons:** [Lucide React](https://lucide.dev/)
-- **Hosting:** GitHub Pages via GitHub Actions
-
----
-
-## 📁 Repository Structure
-
-```text
-hackuet.github.io/
-├── .github/
-│   └── workflows/
-│       └── deploy.yml          # GitHub Pages CI/CD workflow
-├── assets/                     # Raw image staging (gitignored)
-│   ├── raw-team/               # Original uncommitted portraits
-│   └── pics/                   # High-res club event photography
-├── public/                     # Static public assets (logos, OG image, manifest)
-├── scripts/
-│   ├── postexport.mjs          # Post-export prefetch path normalizer for static hosts
-│   ├── upload_to_sanity.py     # Multithreaded Sanity asset uploader with SHA-1 deduplication
-│   ├── seed_sanity_team.py     # Executive panel document sync to Sanity Content Lake
-│   └── seed_sanity_site.py     # Full site settings, story, and registration options seeder
-├── studio/                     # Standalone Sanity Studio v6 (React / TypeScript)
-│   ├── schemaTypes/            # Studio document & object schemas
-│   └── sanity.config.ts        # Sanity project configuration
-├── src/
-│   ├── app/
-│   │   ├── achievements/       # /achievements route
-│   │   ├── events/             # /events route
-│   │   ├── executive-board/    # /executive-board route
-│   │   ├── gallery/            # /gallery route
-│   │   ├── projects/           # /projects route
-│   │   ├── llms.txt/           # LLM site summary endpoint
-│   │   ├── register/           # Member registration & pass generation
-│   │   ├── layout.tsx          # Root layout, meta, JSON-LD schemas
-│   │   ├── not-found.tsx       # Custom 404 page
-│   │   ├── page.tsx            # Home page with hero carousel & timeline
-│   │   ├── robots.ts           # Dynamic robots.txt
-│   │   └── sitemap.ts          # XML Sitemap generator
-│   ├── components/
-│   │   ├── CircuitBackground.tsx # Canvas background circuit animation
-│   │   ├── DieArt.tsx          # Algorithmic silicon die generator with name hash hue
-│   │   ├── EventsView.tsx      # Upcoming/past events tabbed list
-│   │   ├── HeroCarousel.tsx    # Interactive home carousel
-│   │   ├── MemberPass.tsx      # Renderable & downloadable membership card
-│   │   ├── RegisterForm.tsx    # Registration form with live preview
-│   │   ├── TeamGrid.tsx        # Member card grid with auto initials & auto hue
-│   │   ├── motion.tsx          # Scroll reveal and typewriter primitives
-│   │   └── ui.tsx              # Reusable UI controls and wrappers
-│   ├── data/
-│   │   ├── club.ts             # Central fallback data store for offline builds
-│   │   └── sanity-assets.json  # Canonical SHA-1 registry of uploaded Sanity CDN assets
-│   ├── lib/
-│   │   ├── content.ts          # Sanity GROQ query fetcher with fallback resilience
-│   │   ├── sanity.ts           # Sanity client & image builder
-│   │   ├── registration.ts     # Client validation & pass storage logic
-│   │   ├── seo.ts              # OpenGraph, Twitter, and Schema.org metadata
-│   │   └── site.ts             # Site domain & environment resolution
-│   └── styles/
-│       ├── tokens.css          # Color variables, typography, layout tokens
-│       ├── base.css            # Base element resets and shared styles
-│       ├── components.css      # Component-level styles
-│       └── pages.css           # Route-specific layout styles
-├── next.config.ts              # Next.js configuration (static export)
-├── package.json
-└── tsconfig.json
-```
-
----
-
-## 🚀 Getting Started
+## 🚀 Running Guide
 
 ### Prerequisites
-
 - **Node.js**: v20 or higher
 - **npm**: v10 or higher
-- **Python**: 3.10+ (for asset upload and sync scripts)
 
-### Installation
-
-Clone the repository and install dependencies:
+### Setup & Local Development
 
 ```bash
+# Clone the repository
 git clone https://github.com/hackuet/hackuet.github.io.git
 cd hackuet.github.io
+
+# Install dependencies
 npm install
-```
 
-### Development Server
-
-Run the local Next.js development server:
-
-```bash
+# Start Next.js local development server (http://localhost:3000)
 npm run dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser.
-
-To run the Sanity Studio locally:
-
-```bash
+# Start Sanity Studio locally (http://localhost:3333)
 npm run studio
 ```
 
-### Type Check
+### Build & Verification Commands
 
-Verify TypeScript compilation:
+| Command | Description |
+| :--- | :--- |
+| `npm run typecheck` | Validates TypeScript in strict mode (`tsc --noEmit`) |
+| `npm run build` | Generates full static HTML export to `out/` via `next build` |
+| `npm run start` | Serves the exported static build locally on `http://localhost:3000` |
 
-```bash
-npm run typecheck
-```
+---
 
-### Production Build & Static Export
+## ⚡ Core Principles & Architecture
 
-Build the production static export:
+1. **Static-First & Zero Server Overhead:**
+   - The site operates on a 100% pre-rendered static export architecture (`output: 'export'`) deployed to GitHub Pages. All Sanity queries execute at build time without runtime server dependencies.
+2. **Hardware Engineering Design Language:**
+   - The visual identity simulates physical electronics: silicon die floorplans (`DieArt.tsx`), Manhattan PCB trace routing (`CircuitBackground.tsx`), and oscilloscope logic probes. Complete specifications are documented in [DESIGN.md](DESIGN.md).
+3. **Privacy First:**
+   - Zero student roll numbers, phone numbers, or private contact details are rendered publicly on member cards or committed to git.
+4. **Resilient Data Fallbacks:**
+   - Dynamic content is fetched from Sanity Content Lake (`ky8bcwum` / `production`), while local data modules serve as static offline fallbacks.
 
-```bash
-npm run build
-```
+---
 
-The static files will be exported to the `out/` directory, followed by `scripts/postexport.mjs` to ensure route prefetch compatibility across static CDNs.
+## 📁 Project Structure
 
-To preview the exported build locally:
-
-```bash
-npm run start
+```text
+hackuet.github.io/
+├── DESIGN.md          # Comprehensive design system, canvas & animation specifications
+├── studio/            # Sanity Studio CMS schemas and config
+├── src/
+│   ├── app/           # Next.js App Router static pages & metadata
+│   ├── components/    # Reusable UI, CircuitBackground, and DieArt components
+│   ├── lib/           # Sanity client, data fetchers, and utilities
+│   └── styles/        # Design tokens and modular CSS stylesheets
+├── public/            # Static assets (logos, manifest, icons)
+└── scripts/           # Static build and asset helper scripts
 ```
 
 ---
 
-## ⚙️ Content Management & Sanity Workflow
+## 🤝 Contributing & Available Skills
 
-Content is hosted on **Sanity.io Content Lake** (`xcn3cj7z` / `production`).
-
-1. **Sanity Studio:**
-   - Launch locally via `npm run studio` or edit in cloud.
-   - Edit Site Settings, Home Story, Executive Board, Events, Projects, and Gallery items.
-2. **Uploading New Assets:**
-   - Place raw photos in `assets/raw-team/` or `assets/pics/` (automatically gitignored).
-   - Run the upload script:
-     ```bash
-     python3 scripts/upload_to_sanity.py assets/raw-team/
-     ```
-   - Duplicate photos are automatically skipped using SHA-1 hashing against `src/data/sanity-assets.json`.
-3. **Resilient Offline Architecture:**
-   - The site is designed to fetch live data from Sanity at build time, while retaining `src/data/club.ts` as a reliable fallback if network is unavailable.
+- **Contributing Guidelines:** Please read [CONTRIBUTING.md](CONTRIBUTING.md) before submitting pull requests.
+- **Agent Guidelines & Conventions:** AI coding assistants and developers should consult [agents.md](agents.md) for architecture rules and data boundaries.
+- **Available Autonomous Skills:**
+  - [**Sanity Media Uploader**](skills/sanity-media-uploader/SKILL.md) (`skills/sanity-media-uploader`): Tooling and protocol to batch-upload executive board portraits, workshop graphics, and event photography directly to the Sanity Content Lake with automatic SHA-1 deduplication while keeping raw staging assets gitignored.
 
 ---
 
-## 📄 License
+## 📄 License & Credits
 
-This project is open-source under the MIT License. Developed and maintained by the Hardware Acceleration Club of KUET (HACK).
+- Crafted with 🤍 by [@ettisafxrup](https://github.com/ettisafxrup).
+- Maintained by the **Hardware Acceleration Club of KUET (HACK)**.
+- Licensed under the [MIT License](LICENSE).
