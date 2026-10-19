@@ -90,7 +90,7 @@ def parse_members_from_club_ts() -> list[dict]:
 def main():
     env = load_env()
     token = env.get("SANITY_TOKEN")
-    project_id = env.get("SANITY_PROJECT_ID", "xcn3cj7z")
+    project_id = env.get("SANITY_PROJECT_ID", "ky8bcwum")
     dataset = env.get("SANITY_DATASET", "production")
 
     if not token:

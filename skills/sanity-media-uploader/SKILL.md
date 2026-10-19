@@ -20,7 +20,7 @@ This skill provides autonomous AI coding agents and developers with the protocol
    - `studio-hackuet/` lives as a standalone project outside or gitignored in the repo so it is not bundled into GitHub Pages.
 4. **Environment Credentials**:
    - Read from `.env`, `.env.local`, or `~/.env`:
-     - `SANITY_PROJECT_ID=xcn3cj7z`
+     - `SANITY_PROJECT_ID=ky8bcwum`
      - `SANITY_DATASET=production`
      - `SANITY_TOKEN=<Sanity Editor/Admin Write Token>`
 
@@ -55,7 +55,7 @@ The Sanity MCP server is configured in `~/.gemini/antigravity/mcp_config.json`:
       "command": "npx",
       "args": ["-y", "@sanity/mcp-server"],
       "env": {
-        "SANITY_PROJECT_ID": "xcn3cj7z",
+        "SANITY_PROJECT_ID": "ky8bcwum",
         "SANITY_DATASET": "production"
       }
     }

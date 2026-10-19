@@ -40,7 +40,7 @@ def get_env_val(key, default=None):
                         return line.split('=', 1)[1].strip().strip('"').strip("'")
     return default
 
-PROJECT_ID = get_env_val('SANITY_PROJECT_ID', 'xcn3cj7z')
+PROJECT_ID = get_env_val('SANITY_PROJECT_ID', 'ky8bcwum')
 DATASET = get_env_val('SANITY_DATASET', 'production')
 TOKEN = get_env_val('SANITY_TOKEN')
 API_VERSION = get_env_val('SANITY_API_VERSION', 'v2024-01-01')

@@ -29,7 +29,7 @@ def load_env() -> dict[str, str]:
 def main():
     env = load_env()
     token = env.get("SANITY_TOKEN")
-    project_id = env.get("SANITY_PROJECT_ID", "xcn3cj7z")
+    project_id = env.get("SANITY_PROJECT_ID", "ky8bcwum")
     dataset = env.get("SANITY_DATASET", "production")
 
     if not token:
