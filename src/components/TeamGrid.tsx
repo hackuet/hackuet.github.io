@@ -31,34 +31,32 @@ export function TeamGrid({ members }: { members: Member[] }) {
                 </span>
               )}
               <div className="member__info">
-                <p className="member__title">{m.title}</p>
                 <h2 className="member__name">{m.name}</h2>
-                <dl>
-                  {m.designation && (
-                    <div>
-                      <dt>Designation</dt>
-                      <dd>{m.designation}</dd>
-                    </div>
-                  )}
-                  {m.department && (
-                    <div>
-                      <dt>Dept.</dt>
-                      <dd>{m.department}</dd>
-                    </div>
-                  )}
-                  {m.roll && (
-                    <div>
-                      <dt>Roll</dt>
-                      <dd>{m.roll}</dd>
-                    </div>
-                  )}
-                  {m.batch && (
-                    <div>
-                      <dt>Batch</dt>
-                      <dd>{m.batch}</dd>
-                    </div>
-                  )}
-                </dl>
+                {m.designation && <p className="member__designation">{m.designation}</p>}
+                {/* The role is printed under the portrait (member__role), so the
+                    plate carries only the facts that are not visible elsewhere. */}
+                {(m.department || m.roll || m.batch) && (
+                  <dl>
+                    {m.department && (
+                      <div>
+                        <dt>Dept.</dt>
+                        <dd>{m.department}</dd>
+                      </div>
+                    )}
+                    {m.roll && (
+                      <div>
+                        <dt>Roll</dt>
+                        <dd>{m.roll}</dd>
+                      </div>
+                    )}
+                    {m.batch && (
+                      <div>
+                        <dt>Batch</dt>
+                        <dd>{m.batch}</dd>
+                      </div>
+                    )}
+                  </dl>
+                )}
               </div>
             </div>
             <p className="member__role" aria-hidden="true">
