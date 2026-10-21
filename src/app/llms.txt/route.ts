@@ -70,7 +70,7 @@ ${achievements.map((a) => `- ${a.year}: ${a.title}. ${a.result}, ${a.event}.`).j
 
 ${events.map((e) => `- ${e.when}: ${e.title}, ${e.place}. ${e.body}`).join('\n')}
 
-## Executive Board
+## People
 
 ${team.map((m) => `- ${m.title}: ${m.name}${m.designation ? ` (${m.designation})` : ''}${m.batch ? ` (batch ${m.batch})` : ''}`).join('\n')}
 

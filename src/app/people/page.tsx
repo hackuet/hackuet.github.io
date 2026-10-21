@@ -7,14 +7,14 @@ import { orgId, pageMeta } from '@/lib/seo'
 export async function generateMetadata() {
   const club = await getClub()
   return pageMeta({
-    title: 'Executive Board',
-    description: `The Executive Board of ${club.name}: the President, Vice President, General Secretary and the students who run the club this year.`,
+    title: 'People',
+    description: `The people running ${club.name}: the President, Vice President, General Secretary and the students who run the club this year.`,
     path: '/people',
     short: club.short,
   })
 }
 
-export default async function ExecutiveBoardPage() {
+export default async function PeoplePage() {
   const [club, routes, team] = await Promise.all([getClub(), getRoutes(), getTeam()])
 
   const jsonLd = {
