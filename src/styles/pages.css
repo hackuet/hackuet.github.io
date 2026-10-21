@@ -853,9 +853,9 @@
   color: #b9c6e4;
 }
 
-/* Most cards carry only roll + batch, a few also carry dept. Flex with a
-   growing basis lets the fields share whatever row they land in instead of
-   leaving an empty third column. */
+/* Cards carry dept and batch (and faculty a designation); flex with a growing
+   basis lets the fields share whatever row they land in instead of leaving an
+   empty column. */
 .member__info dl {
   display: flex;
   flex-wrap: wrap;
