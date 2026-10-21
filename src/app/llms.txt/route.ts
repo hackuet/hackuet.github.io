@@ -78,7 +78,7 @@ ${lines(
 - [Achievements](${siteUrl}/achievements/): contest results and published work
 - [Events](${siteUrl}/events/): workshops, sprints and what is coming next
 - [Gallery](${siteUrl}/gallery/): sessions, builds and contest days
-- [Executive Board](${siteUrl}/executive-board/): the students running the club this year
+- [People](${siteUrl}/people/): the students running the club this year
 - [Register](${siteUrl}/register/): join the club
 `
   return new Response(body, { headers: { 'Content-Type': 'text/plain; charset=utf-8' } })

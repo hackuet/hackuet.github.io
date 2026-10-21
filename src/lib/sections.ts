@@ -11,7 +11,7 @@ const ROUTE_DEFS: Section[] = [
   { key: 'achievements', href: '/achievements', addr: '0x06', label: 'Achievements', blurb: 'Contest results and published work.' },
   { key: 'events', href: '/events', addr: '0x07', label: 'Events', blurb: 'Workshops, sessions and what is coming next.' },
   { key: 'gallery', href: '/gallery', addr: '0x08', label: 'Gallery', blurb: 'Sessions, builds and contest days.' },
-  { key: 'executive-board', href: '/executive-board', addr: '0x09', label: 'Executive Board', blurb: 'The students running the club this year.' },
+  { key: 'executive-board', href: '/people', addr: '0x09', label: 'People', blurb: 'The students running the club this year.' },
   { key: 'contact', href: '/#contact', addr: '0x0A', label: 'Contact', blurb: 'Where to find us, and how to write.' },
 ]
 
