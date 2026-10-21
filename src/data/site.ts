@@ -140,8 +140,11 @@ const PROJECTS_Q = defineQuery(
 /* --------------------------------------------------------------- fetchers */
 
 /** Nav keys map to routes; `about` and `contact` are homepage anchors. */
+// The board section keeps its `executive-board` key in the CMS but is served at /people.
+const NAV_PATH: Record<string, string> = { 'executive-board': '/people' }
+
 const hrefFor = (key: string) =>
-  key === 'about' ? '/#history' : key === 'contact' ? '/#contact' : `/${key}`
+  key === 'about' ? '/#history' : key === 'contact' ? '/#contact' : (NAV_PATH[key] ?? `/${key}`)
 
 export async function getClub(): Promise<Club> {
   const c = await sanity.fetch(CLUB_Q)

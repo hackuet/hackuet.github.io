@@ -9,7 +9,7 @@ export async function generateMetadata() {
   return pageMeta({
     title: 'Executive Board',
     description: `The Executive Board of ${club.name}: the President, Vice President, General Secretary and the students who run the club this year.`,
-    path: '/executive-board',
+    path: '/people',
     short: club.short,
   })
 }
@@ -32,9 +32,8 @@ export default async function ExecutiveBoardPage() {
 
   return (
     <Page
-      path="/executive-board"
+      path="/people"
       title="The people running HACK."
-      lede="This year’s Executive Board. Hover or tap a portrait for name, title, department and batch."
       routes={routes}
       jsonLd={jsonLd}
     >
