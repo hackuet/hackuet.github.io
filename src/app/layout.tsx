@@ -3,7 +3,7 @@ import { Bricolage_Grotesque, Instrument_Sans, JetBrains_Mono } from 'next/font/
 import { Footer } from '@/components/Footer'
 import { Header } from '@/components/Header'
 import { LazyBackground } from '@/components/LazyBackground'
-import { getClub, getNav } from '@/data/site'
+import { getNavigation, getSiteSettings } from '@/lib/content'
 import { JsonLdScript, organizationLd, websiteLd } from '@/lib/seo'
 import { siteUrl } from '@/lib/site'
 import '@/styles/tokens.css'
@@ -15,18 +15,8 @@ const display = Bricolage_Grotesque({ subsets: ['latin'], variable: '--ff-displa
 const body = Instrument_Sans({ subsets: ['latin'], variable: '--ff-body', display: 'swap' })
 const mono = JetBrains_Mono({ subsets: ['latin'], variable: '--ff-mono', display: 'swap', preload: false })
 
-const FALLBACK_KEYWORDS = [
-  'HACK KUET',
-  'KUET clubs',
-  'KUET hardware club',
-  'digital design',
-  'Khulna University of Engineering and Technology',
-]
-
-/** Title, description and keywords all come from the Sanity `siteSettings` document. */
 export async function generateMetadata(): Promise<Metadata> {
-  const club = await getClub()
-
+  const club = await getSiteSettings()
   return {
     metadataBase: new URL(siteUrl),
     title: {
@@ -39,18 +29,12 @@ export async function generateMetadata(): Promise<Metadata> {
     creator: club.name,
     publisher: club.name,
     category: 'education',
-    keywords: club.keywords.length ? club.keywords : FALLBACK_KEYWORDS,
+    keywords: club.keywords,
     formatDetection: { telephone: false },
     robots: {
       index: true,
       follow: true,
-      googleBot: {
-        index: true,
-        follow: true,
-        'max-image-preview': 'large',
-        'max-snippet': -1,
-        'max-video-preview': -1,
-      },
+      googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1, 'max-video-preview': -1 },
     },
   }
 }
@@ -62,8 +46,7 @@ export const viewport: Viewport = {
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const [club, nav] = await Promise.all([getClub(), getNav()])
-
+  const [club, nav] = await Promise.all([getSiteSettings(), getNavigation()])
   return (
     <html
       lang="en"
@@ -79,13 +62,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <a className="skip" href="#main">
           Skip to content
         </a>
-        <Header
-          short={club.short}
-          name={club.name}
-          intake={club.intake}
-          intakeCloses={club.intakeCloses}
-          nav={nav}
-        />
+        <Header club={club} nav={nav} />
         <main id="main">{children}</main>
         <Footer club={club} nav={nav} />
         <script type="application/ld+json" dangerouslySetInnerHTML={JsonLdScript(organizationLd(club))} />

@@ -1,19 +1,12 @@
-import { passId, type Registration, type TrackOption } from '@/lib/registration'
+import type { Track } from '@/lib/types'
+import { passId, type Registration } from '@/lib/registration'
 import { DieArt, type Hue } from './DieArt'
 import { Mark } from './ui'
 
 const HUES: Hue[] = ['navy', 'blue', 'cyan', 'sky']
 
 /** The pass a member receives. Its artwork is generated from their roll number, so no two match. */
-export function MemberPass({
-  data,
-  tracks,
-  issued,
-}: {
-  data: Registration
-  tracks: TrackOption[]
-  issued: boolean
-}) {
+export function MemberPass({ data, issued, tracks, short }: { data: Registration; issued: boolean; tracks: Track[]; short: string }) {
   const rollOk = /^\d{7}$/.test(data.roll)
   const seed = rollOk ? Number(data.roll) : 1
   const hue = HUES[seed % HUES.length]
@@ -29,7 +22,7 @@ export function MemberPass({
         <div className="pass__top">
           <span className="pass__brand">
             <Mark size={20} />
-            HACK
+            {short}
           </span>
           <span className="pass__status">{issued ? 'Issued' : 'Preview'}</span>
         </div>

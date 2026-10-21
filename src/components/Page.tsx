@@ -1,30 +1,30 @@
 import type { ReactNode } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
-import type { NavItem } from '@/data/site'
+import { getNavigation } from '@/lib/content'
+import { isPageHref } from '@/lib/sections'
 import { breadcrumbLd, JsonLdScript } from '@/lib/seo'
 import { Reveal, Typewriter } from './motion'
 
 /** Shared frame for every section route: breadcrumb, typed title, content, previous/next. */
-export function Page({
+export async function Page({
   path,
   title,
   lede,
-  routes,
   jsonLd,
   children,
 }: {
   path: string
   title: string
   lede?: string
-  routes: NavItem[]
   jsonLd?: object
   children: ReactNode
 }) {
+  const routes = (await getNavigation()).filter((section) => isPageHref(section.href))
   const index = routes.findIndex((item) => item.href === path)
-  const current = routes[index]
-  const prev = routes[index - 1] ?? { key: 'home', href: '/', label: 'Home' }
-  const next = routes[index + 1] ?? { key: 'register', href: '/register', label: 'Register' }
+  const current = routes[index] ?? { key: path, href: path, addr: '0x00', label: title }
+  const prev = routes[index - 1] ?? { href: '/', label: 'Home' }
+  const next = routes[index + 1] ?? { href: '/register', label: 'Register' }
 
   return (
     <article className="page-top" aria-labelledby="page-title">
@@ -36,8 +36,8 @@ export function Page({
                 <Link href="/">Home</Link>
               </li>
               <li aria-current="page">
-                {current?.addr ? <span className="crumbs__addr">{current.addr}</span> : null}
-                {current?.label ?? title}
+                <span className="crumbs__addr">{current.addr}</span>
+                {current.label}
               </li>
             </ol>
           </nav>
@@ -69,10 +69,7 @@ export function Page({
         </nav>
       </div>
 
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={JsonLdScript(breadcrumbLd(path, current?.label ?? title))}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={JsonLdScript(breadcrumbLd(path, current.label))} />
       {jsonLd && <script type="application/ld+json" dangerouslySetInnerHTML={JsonLdScript(jsonLd)} />}
     </article>
   )

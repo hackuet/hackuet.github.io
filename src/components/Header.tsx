@@ -5,20 +5,12 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Menu, X } from 'lucide-react'
-import type { NavItem } from '@/data/site'
+import type { Section, SiteSettings } from '@/lib/types'
 import { HomeLink } from './HomeLink'
 
 const DESKTOP = '(min-width: 1024px)'
 
-type Props = {
-  short: string
-  name: string
-  intake: string
-  intakeCloses: string
-  nav: NavItem[]
-}
-
-export function Header({ short, name, intake, intakeCloses, nav }: Props) {
+export function Header({ club, nav }: { club: SiteSettings; nav: Section[] }) {
   const pathname = usePathname() ?? '/'
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
@@ -66,17 +58,17 @@ export function Header({ short, name, intake, intakeCloses, nav }: Props) {
         </div>
       </div>
       <div className="wrap header__in">
-        <HomeLink className="brand" onNavigate={close} label={`${short}, ${name}: home`}>
+        <HomeLink className="brand" onNavigate={close} label={`${club.short}, ${club.name}: home`}>
           <Image className="brand__logo" src="/logo.svg" alt="" width={383} height={286} priority />
           <span className="brand__text">
-            <span className="brand__word">{short}</span>
+            <span className="brand__word">{club.short}</span>
             <span className="brand__sub">KUET</span>
           </span>
         </HomeLink>
 
         <nav className="nav" aria-label="Primary">
           {nav.map((item) => (
-            <Link key={item.key} href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
+            <Link key={item.href} href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
               {item.label}
             </Link>
           ))}
@@ -108,17 +100,17 @@ export function Header({ short, name, intake, intakeCloses, nav }: Props) {
         <nav className="wrap menu__in" aria-label="Mobile">
           {nav.map((item) => (
             <Link
-              key={item.key}
+              key={item.href}
               href={item.href}
               onClick={close}
               aria-current={isCurrent(item.href) ? 'page' : undefined}
             >
-              {item.addr ? <span className="menu__addr">{item.addr}</span> : null}
+              <span className="menu__addr">{item.addr}</span>
               {item.label}
             </Link>
           ))}
           <p className="menu__note">
-            {intake} closes {intakeCloses}.
+            {club.intake} closes {club.intakeCloses}.
           </p>
         </nav>
       </div>

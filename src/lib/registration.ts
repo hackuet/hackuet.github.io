@@ -1,15 +1,4 @@
-/**
- * Client-side validation for the registration form. The allowed departments,
- * batches and tracks are fetched from Sanity and passed in, so the rules always
- * match what the Studio currently publishes.
- */
-export type TrackOption = { id: string; title: string; note?: string }
-
-export type RegistrationOptions = {
-  departments: string[]
-  batches: string[]
-  tracks: TrackOption[]
-}
+import type { RegistrationOptions } from '@/lib/types'
 
 export type Registration = {
   name: string
@@ -41,11 +30,7 @@ const KEY = 'hack:pass:v1'
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 const BD_PHONE = /^(\+?880|0)1[3-9]\d{8}$/
 
-export function validateField(
-  field: keyof Registration,
-  v: Registration,
-  options: RegistrationOptions,
-): string | undefined {
+export function validateField(field: keyof Registration, v: Registration, options: RegistrationOptions): string | undefined {
   switch (field) {
     case 'name':
       if (v.name.trim().length < 3) return 'Enter your full name.'

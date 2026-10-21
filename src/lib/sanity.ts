@@ -1,32 +1,33 @@
-import { createClient } from 'next-sanity'
+import { createClient } from '@sanity/client'
 import { createImageUrlBuilder } from '@sanity/image-url'
+import type { SanityImage } from './types'
 
-const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID ?? ''
-const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET ?? 'production'
+const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID
+const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET
 
-/** Published-only reads. The site is statically exported, so everything is fetched at build. */
-export const sanity = createClient({
+if (!projectId || !dataset) {
+  throw new Error(
+    'Missing Sanity configuration: set NEXT_PUBLIC_SANITY_PROJECT_ID and NEXT_PUBLIC_SANITY_DATASET. ' +
+      'Locally: copy .env.example to .env.local. In CI: repository Settings → Secrets and variables → ' +
+      'Actions → Variables. See README.md.',
+  )
+}
+
+export const client = createClient({
   projectId,
   dataset,
-  apiVersion: '2026-10-16',
-  useCdn: true,
-  perspective: 'published',
+  apiVersion: '2024-10-01',
+  // Build-time only: never read through the CDN, so a webhook-triggered rebuild
+  // always sees the publish it was triggered by.
+  useCdn: false,
+  maxRetries: 3,
+  timeout: 30000,
 })
 
-const builder = createImageUrlBuilder({ projectId, dataset })
+const builder = createImageUrlBuilder(client)
 
-/**
- * Sanity CDN URL for an image value.
- *
- * Pass `height` only when a fixed crop is genuinely wanted: Sanity centre-crops
- * when no hotspot is set, which slices the head off portrait photographs. Source
- * portraits here run from 1.02 to 2.19 (h/w), so for people we request width only
- * and let CSS `object-fit` handle placement.
- */
-export function imageUrl(source: unknown, width: number, height?: number): string | undefined {
-  if (!source) return undefined
-  let b = builder.image(source as never).width(width).auto('format')
-  if (height) b = b.height(height).fit('crop')
-  else b = b.fit('max')
-  return b.url()
+/** CDN URL for a Sanity image, format-optimised; undefined when no image is set. */
+export function imageUrl(image: SanityImage | undefined, width: number): string | undefined {
+  if (!image?.asset?._ref) return undefined
+  return builder.image(image).width(width).auto('format').quality(80).url()
 }

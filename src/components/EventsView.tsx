@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Reveal } from '@/components/motion'
 import { EmptyState } from '@/components/ui'
-import type { ClubEvent } from '@/data/site'
+import type { ClubEvent } from '@/lib/types'
 
 function EventList({ items }: { items: ClubEvent[] }) {
   return (
@@ -24,15 +24,15 @@ function EventList({ items }: { items: ClubEvent[] }) {
 }
 
 export function EventsView({
-  meets,
   initialUpcoming,
   initialPast,
   allEvents,
+  meets,
 }: {
-  meets: string
   initialUpcoming: ClubEvent[]
   initialPast: ClubEvent[]
   allEvents: ClubEvent[]
+  meets: string
 }) {
   const [upcoming, setUpcoming] = useState<ClubEvent[]>(initialUpcoming)
   const [past, setPast] = useState<ClubEvent[]>(initialPast)

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react'
 import Link from 'next/link'
-import type { Club } from '@/data/site'
+import type { RegistrationOptions, SiteSettings } from '@/lib/types'
 import {
   clearPass,
   emptyRegistration,
@@ -13,7 +13,6 @@ import {
   type Errors,
   type IssuedPass,
   type Registration,
-  type RegistrationOptions,
 } from '@/lib/registration'
 import dynamic from 'next/dynamic'
 import { MemberPass } from './MemberPass'
@@ -61,7 +60,7 @@ function Field({
   )
 }
 
-export function RegisterForm({ club, options }: { club: Club; options: RegistrationOptions }) {
+export function RegisterForm({ club, options }: { club: SiteSettings; options: RegistrationOptions }) {
   const [status, setStatus] = useState<Status>('loading')
   const [values, setValues] = useState<Registration>(emptyRegistration)
   const [errors, setErrors] = useState<Errors>({})
@@ -75,7 +74,7 @@ export function RegisterForm({ club, options }: { club: Club; options: Registrat
     const saved = loadPass(options)
     setPass(saved)
     setStatus(saved ? 'issued' : 'form')
-  }, [])
+  }, [options])
 
   useEffect(() => {
     if (status === 'issued' && justIssued.current) {
@@ -120,7 +119,7 @@ export function RegisterForm({ club, options }: { club: Club; options: Registrat
     setErrors(found)
     const first = (Object.keys(values) as (keyof Registration)[]).find((f) => found[f])
     if (first) {
-      const target = first === 'track' ? 'reg-track-fpga' : `reg-${first}`
+      const target = first === 'track' ? `reg-track-${options.tracks[0]?.id ?? ''}` : `reg-${first}`
       document.getElementById(target)?.focus()
       return
     }
@@ -195,7 +194,7 @@ export function RegisterForm({ club, options }: { club: Club; options: Registrat
           </div>
         </div>
         <aside className="register__pass" aria-label="Your member pass">
-          <MemberPass data={pass} tracks={options.tracks} issued />
+          <MemberPass data={pass} issued tracks={options.tracks} short={club.short} />
         </aside>
 
         {confirming && <Modal
@@ -369,7 +368,7 @@ export function RegisterForm({ club, options }: { club: Club; options: Registrat
       </form>
 
       <aside className="register__pass" aria-label="Member pass preview">
-        <MemberPass data={values} tracks={options.tracks} issued={false} />
+        <MemberPass data={values} issued={false} tracks={options.tracks} short={club.short} />
         <p className="field__hint">Your pass fills in as you type.</p>
       </aside>
     </div>

@@ -1,37 +1,54 @@
 import type { Metadata } from 'next'
-import type { Club } from '@/data/site'
 import { siteUrl } from './site'
+import type { SiteSettings } from './types'
 
 export const orgId = `${siteUrl}/#organization`
 export const websiteId = `${siteUrl}/#website`
+
+type MetaClub = Pick<SiteSettings, 'short' | 'name'>
 
 /** Per-route metadata: unique title and description, canonical URL, and matching social cards. */
 export function pageMeta({
   title,
   description,
   path,
-  short,
+  club,
 }: {
   title: string
   description: string
   path: string
-  short: string
+  club: MetaClub
 }): Metadata {
   const url = path === '/' ? '/' : `${path}/`
-  const fullTitle = path === '/' ? title : `${title} | ${short}, KUET`
+  const fullTitle = path === '/' ? title : `${title} | ${club.short}, KUET`
+  const ogImageUrl = `${siteUrl}/opengraph-image.jpg`
+
   return {
     title: path === '/' ? { absolute: title } : title,
     description,
     alternates: { canonical: url },
     openGraph: {
       type: 'website',
-      siteName: short,
+      siteName: club.name,
       locale: 'en_BD',
       title: fullTitle,
       description,
       url,
+      images: [
+        {
+          url: ogImageUrl,
+          width: 1200,
+          height: 630,
+          alt: `${club.name} (${club.short})`,
+        },
+      ],
     },
-    twitter: { card: 'summary', title: fullTitle, description },
+    twitter: {
+      card: 'summary_large_image',
+      title: fullTitle,
+      description,
+      images: [ogImageUrl],
+    },
   }
 }
 
@@ -46,24 +63,13 @@ export function breadcrumbLd(path: string, label: string) {
   }
 }
 
-export function organizationLd(club: Club) {
-  const knowsAbout = club.keywords.length
-    ? club.keywords
-    : [
-        'FPGA',
-        'Verilog',
-        'Digital design',
-        'GPU computing',
-        'RISC-V',
-        'Computer architecture',
-        'Embedded systems',
-      ]
+export function organizationLd(club: SiteSettings) {
   return {
     '@context': 'https://schema.org',
     '@type': ['Organization', 'EducationalOrganization'],
     '@id': orgId,
     name: club.name,
-    alternateName: [club.short],
+    alternateName: [club.short, 'HACK KUET'],
     url: `${siteUrl}/`,
     logo: { '@type': 'ImageObject', url: `${siteUrl}/logo.png`, width: 383, height: 286 },
     image: `${siteUrl}/opengraph-image.jpg`,
@@ -71,7 +77,8 @@ export function organizationLd(club: Club) {
     slogan: club.tagline,
     ...(club.founded ? { foundingDate: String(club.founded) } : {}),
     email: club.email,
-    knowsAbout,
+    sameAs: ['https://github.com/hackuet'],
+    knowsAbout: club.keywords,
     parentOrganization: {
       '@type': 'CollegeOrUniversity',
       name: club.university,
@@ -85,16 +92,11 @@ export function organizationLd(club: Club) {
       postalCode: '9203',
       addressCountry: 'BD',
     },
-    contactPoint: {
-      '@type': 'ContactPoint',
-      contactType: 'membership enquiries',
-      email: club.email,
-      availableLanguage: ['en', 'bn'],
-    },
+    contactPoint: { '@type': 'ContactPoint', contactType: 'membership enquiries', email: club.email, availableLanguage: ['en', 'bn'] },
   }
 }
 
-export function websiteLd(club: Club) {
+export function websiteLd(club: SiteSettings) {
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',

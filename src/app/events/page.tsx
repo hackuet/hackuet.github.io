@@ -1,20 +1,21 @@
+import type { Metadata } from 'next'
 import { EventsView } from '@/components/EventsView'
 import { Page } from '@/components/Page'
-import { getClub, getEvents, getRoutes } from '@/data/site'
+import { getEvents, getSiteSettings } from '@/lib/content'
 import { orgId, pageMeta } from '@/lib/seo'
 
-export async function generateMetadata() {
-  const club = await getClub()
+export async function generateMetadata(): Promise<Metadata> {
+  const club = await getSiteSettings()
   return pageMeta({
     title: 'Events',
-    description: `Upcoming and past events from ${club.name}: Verilog workshops, the annual Hardware Sprint, GPU computing sessions and open design reviews at KUET.`,
+    description: `Upcoming and past events from ${club.name}: workshops, sessions and project showcases at KUET.`,
     path: '/events',
-    short: club.short,
+    club,
   })
 }
 
 export default async function EventsPage() {
-  const [club, routes, events] = await Promise.all([getClub(), getRoutes(), getEvents()])
+  const [club, events] = await Promise.all([getSiteSettings(), getEvents()])
 
   // Build-time split for initial HTML and Event JSON-LD structured data.
   const today = new Date().toISOString().slice(0, 10)
@@ -34,12 +35,7 @@ export default async function EventsPage() {
       location: {
         '@type': 'Place',
         name: e.place,
-        address: {
-          '@type': 'PostalAddress',
-          addressLocality: 'Khulna',
-          postalCode: '9203',
-          addressCountry: 'BD',
-        },
+        address: { '@type': 'PostalAddress', addressLocality: 'Khulna', postalCode: '9203', addressCountry: 'BD' },
       },
       organizer: { '@id': orgId },
     })),
@@ -49,11 +45,10 @@ export default async function EventsPage() {
     <Page
       path="/events"
       title="What is on, and what was."
-      lede="Every event is free for KUET students. Members get first claim on boards."
-      routes={routes}
+      lede="Every event is free for KUET students. Members get first claim on hardware."
       jsonLd={upcoming.length ? jsonLd : undefined}
     >
-      <EventsView meets={club.meets} initialUpcoming={upcoming} initialPast={past} allEvents={events} />
+      <EventsView initialUpcoming={upcoming} initialPast={past} allEvents={events} meets={club.meets} />
     </Page>
   )
 }
