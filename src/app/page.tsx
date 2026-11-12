@@ -113,15 +113,7 @@ export default async function HomePage() {
 
       <section id="contact" className="section closing" aria-labelledby="contact-title">
         <div className="wrap split">
-          <SectionHead id="contact-title" addr="0x0A" label="Contact" title="Come by, or write to us.">
-            <p className="section-head__note">
-              {club.intake} is open until {club.intakeCloses}.
-            </p>
-            <Link href="/register" className="btn btn--primary">
-              Register
-              <ArrowRight size={18} aria-hidden="true" />
-            </Link>
-          </SectionHead>
+          <SectionHead id="contact-title" addr="0x0A" label="Contact" title="Come by, or write to us." />
           <ul className="rows contact">
             <Reveal as="li">
               <a href={`mailto:${club.email}`}>

@@ -24,9 +24,6 @@ export function Footer({ club, nav }: { club: SiteSettings; nav: Section[] }) {
                 <Link href={item.href}>{item.label}</Link>
               </li>
             ))}
-            <li>
-              <Link href="/register">Register</Link>
-            </li>
           </ul>
         </nav>
 
