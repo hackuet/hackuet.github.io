@@ -14,7 +14,7 @@ function required(what: string): never {
 
 export async function getSiteSettings(): Promise<SiteSettings> {
   const doc = await client.fetch<SiteSettings | null>(`*[_id == "siteSettings"][0]{
-    short, name, university, tagline, description, founded, email, room, address, mapUrl, meets, intake, intakeCloses, keywords
+    short, name, university, tagline, description, founded, email, room, address, mapUrl, linkedinUrl, facebookUrl, meets, intake, intakeCloses, keywords
   }`)
   if (!doc) required('the "Site settings" document')
   return { ...doc, keywords: doc.keywords ?? [] }
@@ -190,11 +190,21 @@ export async function getProjects(): Promise<Project[]> {
 }
 
 export async function getAchievements(): Promise<Achievement[]> {
-  type AchDoc = Omit<Achievement, 'id'> & { _id: string }
+  type AchDoc = Omit<Achievement, 'id' | 'images'> & {
+    _id: string
+    images?: (SanityImage & { alt?: string })[]
+  }
   const docs = (await client.fetch<AchDoc[]>(`*[_type == "achievement"] | order(orderRank asc) {
-    _id, year, title, event, result
+    _id, year, title, event, result, images[]{ asset, alt }
   }`)) as AchDoc[]
-  return docs.map(({ _id, ...rest }: AchDoc) => ({ ...rest, id: _id }))
+  return docs.map(({ _id, images, ...rest }: AchDoc) => ({
+    ...rest,
+    id: _id,
+    images: (images ?? []).flatMap((image) => {
+      const src = imageUrl(image, 1600)
+      return src ? [{ src, alt: image.alt ?? rest.title }] : []
+    }),
+  }))
 }
 
 export async function getRegistrationOptions(): Promise<RegistrationOptions> {

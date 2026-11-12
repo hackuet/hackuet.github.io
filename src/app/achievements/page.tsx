@@ -49,6 +49,17 @@ export default async function AchievementsPage() {
                 <p>{a.event}</p>
               </div>
               <span className="results__result">{a.result}</span>
+              {a.images.length > 0 && (
+                <div className="results__images">
+                  {a.images.map((image) => (
+                    <figure key={image.src}>
+                      {/* Sanity already serves a resized, format-optimized image. */}
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={image.src} alt={image.alt} loading="lazy" decoding="async" />
+                    </figure>
+                  ))}
+                </div>
+              )}
             </Reveal>
           ))}
         </ul>

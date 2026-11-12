@@ -560,7 +560,7 @@ select.input {
   gap: var(--s-2);
 }
 
-/* On very narrow phones the logo alone carries the brand, leaving room for Register and the menu. */
+/* On very narrow phones the logo alone carries the brand, leaving room for the menu. */
 @media (max-width: 359px) {
   .brand__text {
     display: none;
@@ -722,12 +722,6 @@ select.input {
   .menu:not([hidden]) .menu__in a {
     animation: none;
   }
-}
-
-.menu__note {
-  margin-top: var(--s-5);
-  font-size: var(--text-sm);
-  color: var(--ink-3);
 }
 
 /* Phones and tablets get the menu button; the inline nav starts at laptop width. */

@@ -8,16 +8,16 @@ import { orgId, pageMeta } from '@/lib/seo'
 export async function generateMetadata(): Promise<Metadata> {
   const club = await getSiteSettings()
   return pageMeta({
-    title: 'Executive Board',
-    description: `The Executive Board of ${club.name}: the students running the club this year.`,
-    path: '/executive-board',
+    title: 'People',
+    description: `The people running ${club.name}: the students running the club this year.`,
+    path: '/people',
     club,
   })
 }
 
 // Note: We will later support keeping and archiving previous executive panels (e.g. 2025, 2024 alumni panels).
 // Currently only the active 2026 panel is loaded and displayed.
-export default async function ExecutiveBoardPage() {
+export default async function PeoplePage() {
   const [club, team] = await Promise.all([getSiteSettings(), getTeam()])
 
   const jsonLd = team.length
@@ -37,15 +37,14 @@ export default async function ExecutiveBoardPage() {
 
   return (
     <Page
-      path="/executive-board"
+      path="/people"
       title="The people running HACK."
-      lede="This year’s Executive Board. Hover or tap a portrait for name, title, department and batch."
       jsonLd={jsonLd}
     >
       {team.length ? (
         <TeamGrid members={team} />
       ) : (
-        <EmptyState title="The board is being formed" body="Executive board profiles will appear here once the committee is confirmed." />
+        <EmptyState title="The board is being formed" body="Member profiles will appear here once the committee is confirmed." />
       )}
     </Page>
   )
