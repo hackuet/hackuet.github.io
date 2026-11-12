@@ -68,7 +68,14 @@ export type Project = {
   links: { label: string; url: string }[]
 }
 
-export type Achievement = { id: string; year: string; title: string; event: string; result: string }
+export type Achievement = {
+  id: string
+  year: string
+  title: string
+  event: string
+  result: string
+  images: { src: string; alt: string }[]
+}
 
 export type Photo = {
   id: string
