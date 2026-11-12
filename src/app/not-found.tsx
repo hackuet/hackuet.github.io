@@ -13,14 +13,9 @@ export default function NotFound() {
           </p>
           <h1 id="nf-title">Nothing lives at this address.</h1>
           <p className="lede">The link may be old, or the page has not been built yet.</p>
-          <div className="register__actions">
-            <Link href="/" className="btn btn--primary">
-              Go to home
-            </Link>
-            <Link href="/register" className="btn btn--secondary">
-              Register
-            </Link>
-          </div>
+          <Link href="/" className="btn btn--primary">
+            Go to home
+          </Link>
         </header>
       </div>
     </section>

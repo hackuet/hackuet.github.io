@@ -12,6 +12,25 @@ export const achievement = defineType({
     defineField({ name: 'title', title: 'Title', type: 'string', validation: (r) => r.required() }),
     defineField({ name: 'event', title: 'Event / venue', type: 'string', validation: (r) => r.required() }),
     defineField({ name: 'result', title: 'Result', type: 'string', validation: (r) => r.required(), description: 'e.g. "Champion", "Paper accepted".' }),
+    defineField({
+      name: 'images',
+      title: 'Images',
+      type: 'array',
+      of: [
+        {
+          type: 'image',
+          options: { hotspot: true },
+          fields: [
+            defineField({
+              name: 'alt',
+              title: 'Alternative text',
+              type: 'string',
+              validation: (r) => r.required(),
+            }),
+          ],
+        },
+      ],
+    }),
   ],
   preview: { select: { title: 'title', subtitle: 'result' } },
 })
