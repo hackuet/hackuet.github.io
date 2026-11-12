@@ -32,6 +32,8 @@ export async function GET() {
 - Weekly sessions: ${club.meets}
 - Membership: free, open to students of every KUET department, no experience required
 - Contact: ${club.email}
+- LinkedIn: ${club.linkedinUrl}
+- Facebook: ${club.facebookUrl}
 
 ## What members work on
 

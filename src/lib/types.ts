@@ -1,5 +1,5 @@
 // Pure content types shared by server fetchers, client components, and the
-// registration logic. Nothing here may import Sanity — client bundles depend on it.
+// UI components. Nothing here may import Sanity — client bundles depend on it.
 import type { Hue } from '@/components/DieArt'
 
 export type { Hue }
@@ -15,6 +15,8 @@ export type SiteSettings = {
   room: string
   address: string
   mapUrl: string
+  linkedinUrl: string
+  facebookUrl: string
   meets: string
   intake: string
   intakeCloses: string

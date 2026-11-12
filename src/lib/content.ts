@@ -14,7 +14,7 @@ function required(what: string): never {
 
 export async function getSiteSettings(): Promise<SiteSettings> {
   const doc = await client.fetch<SiteSettings | null>(`*[_id == "siteSettings"][0]{
-    short, name, university, tagline, description, founded, email, room, address, mapUrl, meets, intake, intakeCloses, keywords
+    short, name, university, tagline, description, founded, email, room, address, mapUrl, linkedinUrl, facebookUrl, meets, intake, intakeCloses, keywords
   }`)
   if (!doc) required('the "Site settings" document')
   return { ...doc, keywords: doc.keywords ?? [] }
