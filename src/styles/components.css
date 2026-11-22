@@ -538,7 +538,7 @@ select.input {
   align-items: center;
   justify-content: space-between;
   gap: var(--s-5);
-  height: var(--header-h);
+  height: var(--nav-h);
 }
 
 .brand {
@@ -656,8 +656,11 @@ select.input {
 }
 
 .menu {
-  position: fixed;
-  inset: var(--header-h) 0 0 0;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: calc(100dvh - 100%);
   background: var(--bg);
   overflow-y: auto;
   border-top: 1px solid var(--line);
