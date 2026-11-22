@@ -24,7 +24,7 @@ export async function Page({
   const index = routes.findIndex((item) => item.href === path)
   const current = routes[index] ?? { key: path, href: path, addr: '0x00', label: title }
   const prev = routes[index - 1] ?? { href: '/', label: 'Home' }
-  const next = routes[index + 1] ?? { href: '/register', label: 'Register' }
+  const next = routes[index + 1] ?? { href: '/', label: 'Home' }
 
   return (
     <article className="page-top" aria-labelledby="page-title">

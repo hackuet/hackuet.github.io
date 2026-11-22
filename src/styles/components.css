@@ -538,7 +538,7 @@ select.input {
   align-items: center;
   justify-content: space-between;
   gap: var(--s-5);
-  height: var(--header-h);
+  height: var(--nav-h);
 }
 
 .brand {
@@ -560,7 +560,7 @@ select.input {
   gap: var(--s-2);
 }
 
-/* On very narrow phones the logo alone carries the brand, leaving room for Register and the menu. */
+/* On very narrow phones the logo alone carries the brand, leaving room for the menu. */
 @media (max-width: 359px) {
   .brand__text {
     display: none;
@@ -656,8 +656,11 @@ select.input {
 }
 
 .menu {
-  position: fixed;
-  inset: var(--header-h) 0 0 0;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: calc(100dvh - 100%);
   background: var(--bg);
   overflow-y: auto;
   border-top: 1px solid var(--line);
@@ -722,12 +725,6 @@ select.input {
   .menu:not([hidden]) .menu__in a {
     animation: none;
   }
-}
-
-.menu__note {
-  margin-top: var(--s-5);
-  font-size: var(--text-sm);
-  color: var(--ink-3);
 }
 
 /* Phones and tablets get the menu button; the inline nav starts at laptop width. */

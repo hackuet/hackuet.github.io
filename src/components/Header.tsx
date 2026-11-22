@@ -75,14 +75,6 @@ export function Header({ club, nav }: { club: SiteSettings; nav: Section[] }) {
         </nav>
 
         <div className="header__actions">
-          <Link
-            href="/register"
-            className="btn btn--primary btn--sm"
-            aria-current={isCurrent('/register') ? 'page' : undefined}
-            onClick={close}
-          >
-            Register
-          </Link>
           <button
             type="button"
             className="icon-btn header__toggle"
@@ -109,9 +101,6 @@ export function Header({ club, nav }: { club: SiteSettings; nav: Section[] }) {
               {item.label}
             </Link>
           ))}
-          <p className="menu__note">
-            {club.intake} closes {club.intakeCloses}.
-          </p>
         </nav>
       </div>
     </header>

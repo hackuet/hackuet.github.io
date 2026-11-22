@@ -76,12 +76,9 @@ export function HeroCarousel({ slides }: { slides: Slide[] }) {
           </div>
 
           <div className="hero__cta">
-            <Link href="/register" className="btn btn--primary btn--lg">
-              Register
-              <ArrowRight size={18} aria-hidden="true" />
-            </Link>
-            <Link href="/#contact" className="btn btn--secondary btn--lg">
+            <Link href="/#contact" className="btn btn--primary btn--lg">
               Contact us
+              <ArrowRight size={18} aria-hidden="true" />
             </Link>
           </div>
         </div>

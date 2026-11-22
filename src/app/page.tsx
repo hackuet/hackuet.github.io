@@ -113,15 +113,7 @@ export default async function HomePage() {
 
       <section id="contact" className="section closing" aria-labelledby="contact-title">
         <div className="wrap split">
-          <SectionHead id="contact-title" addr="0x0A" label="Contact" title="Come by, or write to us.">
-            <p className="section-head__note">
-              {club.intake} is open until {club.intakeCloses}.
-            </p>
-            <Link href="/register" className="btn btn--primary">
-              Register
-              <ArrowRight size={18} aria-hidden="true" />
-            </Link>
-          </SectionHead>
+          <SectionHead id="contact-title" addr="0x0A" label="Contact" title="Come by, or write to us." />
           <ul className="rows contact">
             <Reveal as="li">
               <a href={`mailto:${club.email}`}>
@@ -131,6 +123,22 @@ export default async function HomePage() {
               </a>
             </Reveal>
             <Reveal as="li" delay={60}>
+              <a href={club.linkedinUrl} target="_blank" rel="noreferrer">
+                <span className="contact__label">LinkedIn</span>
+                <span className="contact__value">Follow {club.short}</span>
+                <ArrowUpRight size={18} aria-hidden="true" />
+                <span className="sr-only">(opens LinkedIn in a new tab)</span>
+              </a>
+            </Reveal>
+            <Reveal as="li" delay={120}>
+              <a href={club.facebookUrl} target="_blank" rel="noreferrer">
+                <span className="contact__label">Facebook</span>
+                <span className="contact__value">Follow {club.short}</span>
+                <ArrowUpRight size={18} aria-hidden="true" />
+                <span className="sr-only">(opens Facebook in a new tab)</span>
+              </a>
+            </Reveal>
+            <Reveal as="li" delay={180}>
               <a href={club.mapUrl} target="_blank" rel="noreferrer">
                 <span className="contact__label">Visit</span>
                 <span className="contact__value">
@@ -141,7 +149,7 @@ export default async function HomePage() {
                 <span className="sr-only">(opens map in a new tab)</span>
               </a>
             </Reveal>
-            <Reveal as="li" delay={120}>
+            <Reveal as="li" delay={240}>
               <div>
                 <span className="contact__label">Sessions</span>
                 <span className="contact__value">

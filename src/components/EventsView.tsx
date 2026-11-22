@@ -57,8 +57,8 @@ export function EventsView({
             title="Nothing on the calendar yet"
             body={`Weekly sessions still run ${meets}. New events are announced to members first.`}
             action={
-              <Link href="/register" className="btn btn--primary btn--sm">
-                Register to hear first
+              <Link href="/#contact" className="btn btn--primary btn--sm">
+                Contact us
               </Link>
             }
           />
