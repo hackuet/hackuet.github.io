@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
   // Ignored by `next build`, which statically exports to /out. Update the
   // address if the machine's LAN IP changes.
   allowedDevOrigins: ['192.168.0.114'],
+  experimental: { agentUpgrade: 'security' },
 }
 
 export default nextConfig
